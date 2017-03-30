@@ -2,8 +2,14 @@
 
 ## Index
 
-1. [Resources](#resources)
-2. [Project Structure](#project-structure)
+1. [Intruction](#intruction)
+2. [Resources](#resources)
+3. [Project Structure](#project-structure)
+
+## Intruction
+
+In this project, we are going to implement a neural network for recognizing Grammatical Facial Expressions (GFEs) used in the Brazilian Sign Language.
+To do so we'll use ConvNetJS, a Javascript library, to train a neural network using backpropagation algorithms. 
 
 ## Resources
   - [Grammatical Facial Expressions Data Set](http://archive.ics.uci.edu/ml/datasets/Grammatical+Facial+Expressions)
@@ -22,8 +28,9 @@ Grammatical Facial Expressions for Brazilian Sign Language
 The dataset is organized in 36 files: 18 datapoint files and 18 target files, one pair for each video which compose the dataset.The name of the file refers to each video: the letter corresponding to the user (A and B), name of grammatical facial expression and a specification (target or datapoints).
 
 Contains:
-  - Datapoints files (* _ datapoints.txt): a timestamp (double) and 100 numeric attributes (double).
-	- Targets files (* _ targets.txt): a class attribute (interger)
+  - Datapoints files (* _ datapoints.txt): a timestamp (double) and 100 numeric attributes (double)
+
+  - Targets files (* _ targets.txt): a class attribute (interger)
 
 ### [Parsed GFE Data](https://github.com/NunoRamos/IART-FEUP/tree/master/Parsed%20GFE%20Data)
   Contains datapoints and target files in JSON format for further use in the web application.
