@@ -1,8 +1,8 @@
 1. Title: Grammatical Facial Expressions for Brazilian Sign Language
 
 2. Sources:
-
-     (a) Creators: 
+  ```
+    (a) Creators:
 		Fernando de Almeida Freitas (Freitas, F. A.)
 		{fernando} at incluirtecnologia.com.br
 		Felipe Venâncio Barbosa (Barbosa, F. V.)		
@@ -10,37 +10,37 @@
         	{felipebarbosa, sarajane} at usp.br
                 http://each.uspnet.usp.br/sarajane/
 
-     (b) Donor: 
+     (b) Donor:
 		University of São Paulo
 		School of Art, Sciences and Humanities
 		Sao Paulo, SP, Brazil
 		http://www5.usp.br/en/
-		
+
 		Incluir Tecnologia LTDA ME
 		Itajubá, MG, Brazil
 		www.incluirtecnologia.com.br
-			
-     (c) Date: September, 2014
 
+     (c) Date: September, 2014
+  ```
 
 3. Past Usage:
 
    1. FREITAS, F. A.; Peres, S. M.; Lima, C. A. M.; BARBOSA, F. V.. Grammatical Facial Expressions Recognition with Machine Learning. In: 27th Florida Artificial Intelligence Research Society Conference (FLAIRS), 2014, Pensacola Beach. Proceedings of the 27th Florida Artificial Intelligence Research Society Conference (FLAIRS). Palo Alto: The AAAI Press, 2014, p.180-185.
-       
-	   
+
+
 4. Relevant Information:
 
    --- The automated analysis of facial expressions has been widely used in different research areas, such as biometrics or emotional analysis. Special importance is attached to facial expressions in the area of sign language, since they help to form the grammatical structure of the language and allow for the creation of language disambiguation, and thus are called Grammatical Facial Expressions. This dataset was already used in the experiments described in Freitas et al. (2014).
 
    --- The dataset is composed by eighteen videos recorded using Microsoft Kinect sensor. In each video, a user performs (five times), in front of the sensor, five sentences in Libras (Brazilian Sign Language) that require the use of a grammatical facial expression. By using Microsoft Kinect, we have obtained: (a) a image of each frame, identified by a timestamp; (b) a text file containing one hundred coordinates (x, y, z) of points from eyes, nose, eyebrows, face contour and iris; each line in the file corresponds to points extracted from one frame. The images enabled a manual labeling of each file by a specialist, providing a ground truth for classification.
 
-   --- The dataset is organized in 36 files: 18 datapoint files and 18 target files, one pair for each video which compose the dataset.The name of the file refers to each video: the letter corresponding to the user (A and B), name of grammatical facial expression and a specification (target or datapoints). 
+   --- The dataset is organized in 36 files: 18 datapoint files and 18 target files, one pair for each video which compose the dataset.The name of the file refers to each video: the letter corresponding to the user (A and B), name of grammatical facial expression and a specification (target or datapoints).
 
 5. Number of Instances: 27965 frames   
 
 	+ frames means that the EFG is occurring - it is the positive class in a binary classification task.
 	- frames means that the EFG is not occurring - it is the negative class in a binary classification task.
-
+  ```
 	a_affirmative 		 414 + frames and 648 	- frames
 	a_conditional 		 548 + frames and 1359 - frames
 	a_doubt_question 	 491 + frames and 821 	- frames
@@ -60,17 +60,18 @@
 	b_wh_question 		 549 + frames and 779 	- frames
 	b_yn_question 		 715 + frames and 1023 - frames
 
-
+  ```
 6. Number of Attributes:  
 
-	Datapoints files (*_datapoints.txt): a timestamp (double) and 100 numeric attributes (double).
-	Targets files (*_targets.txt): a class attribute (interger)
+	Datapoints files (* _ datapoints.txt): a timestamp (double) and 100 numeric attributes (double).
+
+  Targets files (* _ targets.txt): a class attribute (interger)
 
 
 7. Attribute Information:
 
    Datapoints files:
-
+  ```
    Coordinates x and y are given in pixels.
    Coordinates z are given in millimetres.
 
@@ -87,10 +88,10 @@
    89		(x,y,z) - nose tip
    90 - 94	(x,y,z) - line above left eyebrow
    95 - 99	(x,y,z) - line above right eyebrow
-   
+
    View file:
    You can see all points in: view_points.png
-   
+  ``` 
 8. Missing Attribute Values: None
 
 9. Extra information:

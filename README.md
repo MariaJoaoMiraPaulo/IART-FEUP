@@ -28,7 +28,7 @@ Contains:
 ### [Parsed GFE Data](https://github.com/NunoRamos/IART-FEUP/tree/master/Parsed%20GFE%20Data)
   Contains datapoints and target files in JSON format for further use in the web application.
 
-### text2json Parse
+### [text2json Parse](https://github.com/NunoRamos/IART-FEUP/tree/master/Text2Json%20Parser)
   Small CLI style node app to convert delimited `.txt` files into `.json`
 
 ### [webapp](https://github.com/NunoRamos/IART-FEUP/tree/master/webapp)
