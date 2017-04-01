@@ -1,5 +1,12 @@
 # IART-FEUP - Neural network to rate facial expressions.
 
+## Contributors
+
+1. [Maria João Mira Paulo](https://github.com/MariaJoaoMiraPaulo)
+2. [Nuno Miguel Mendes Ramos](https://github.com/pedro-c)
+3. [Pedro Duarte da Costa](https://github.com/NunoRamos)
+
+
 ## Index
 
 1. [Intruction](#intruction)
