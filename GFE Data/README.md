@@ -60,6 +60,34 @@
 	b_wh_question 		 549 + frames and 779 	- frames
 	b_yn_question 		 715 + frames and 1023 - frames
 
+affirmative:
+	+ 942
+	- 1194
+conditional:
+	+ 1137
+	- 2804
+doubt:
+	+ 1271
+	- 1538
+emphasis:
+	+ 861
+	- 1886
+negative:
+	+ 1240
+	- 1466
+relative:
+	+ 1194
+	- 3040
+topics:
+	+ 827
+	- 2794
+wh_question:
+	+ 1158
+	- 1446
+yn_question:
+	+ 1247
+	- 1881
+
   ```
 6. Number of Attributes:  
 
