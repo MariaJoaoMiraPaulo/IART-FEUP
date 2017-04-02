@@ -22,6 +22,7 @@ To do so we'll use ConvNetJS, a Javascript library, to train a neural network us
   - [Grammatical Facial Expressions Data Set](http://archive.ics.uci.edu/ml/datasets/Grammatical+Facial+Expressions)
   - [Relevant Paper](http://www.aaai.org/ocs/index.php/FLAIRS/FLAIRS14/paper/viewFile/7788/7821)
   - [ConvNetJS - Javascript library for training Neural Networks](http://cs.stanford.edu/people/karpathy/convnetjs/index.html)
+  - [Notes of the Stanford CS class CS231n: Convolutional Neural Networks for Visual Recognition](http://cs231n.github.io/)
 
 
 ## Project Structure
