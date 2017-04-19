@@ -64,7 +64,7 @@ def process_expression(fexpression):
             expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
-            json.dump(expression_output.__dict__, outfile, sort_keys=True)
+            json.dump([expression_output.__dict__], outfile, sort_keys=True,separators=(',', ': '))
             outfile.write('\n')
     return 1
 
@@ -116,9 +116,9 @@ class FEoutput:
 
 
 
-for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/"):
+for fileName in os.listdir("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/datapoints/"):
     if fileName.endswith(".txt"):
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
@@ -156,4 +156,3 @@ for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoi
                 facial_expression.datapoints.append(d)
             i = i + 1
         process_expression(facial_expression)
-
