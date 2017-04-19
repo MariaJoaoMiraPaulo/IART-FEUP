@@ -8,12 +8,12 @@ function start() {
 
   var layer_defs = [];
 // input layer of size 1x1x2 (all volumes are 3D)
-layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:2});
+layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:20});
 // some fully connected layers
 layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
 layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
 // a softmax classifier predicting probabilities for two classes: 0,1
-layer_defs.push({type:'softmax', num_classes:2});
+layer_defs.push({type:'softmax', num_classes:10});
 
 // create a net out of it
 var net = new convnetjs.Net();

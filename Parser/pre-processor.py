@@ -42,7 +42,7 @@ def distance(p0, p1):
 
 def process_expression(fexpression):
     with open(fexpression.name.replace(".txt", ".json"), "w") as outfile:
-        outfile.write('[')
+        expressions = [];
         for expression in fexpression.datapoints:
             expression_output = FEoutput()
             expression_output.d1 = distance(expression.points[48], expression.points[54])
@@ -65,9 +65,8 @@ def process_expression(fexpression):
             expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
-            json.dump(expression_output.__dict__, outfile, sort_keys=True)
-            outfile.write(',\n')
-        outfile.write(']')
+            expressions.append(expression_output.__dict__)
+        json.dump(expressions, outfile, sort_keys=True)
     return 1
 
 
