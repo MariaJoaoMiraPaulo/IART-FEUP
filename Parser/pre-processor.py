@@ -42,8 +42,10 @@ def distance(p0, p1):
 
 def process_expression(fexpression):
     with open(fexpression.name.replace(".txt", ".json"), "w") as outfile:
+        expressions = []
         for expression in fexpression.datapoints:
             expression_output = FEoutput()
+            expression_output.index = expression.index
             expression_output.d1 = distance(expression.points[48], expression.points[54])
             expression_output.d2 = distance(expression.points[51], expression.points[57])
             expression_output.d3 = distance(expression.points[62], expression.points[66])
@@ -64,11 +66,11 @@ def process_expression(fexpression):
             expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
-            json.dump(expression_output.__dict__, outfile, sort_keys=True)
-            outfile.write('\n')
+            expression_output.target = expression.target
+            expressions.append(expression_output.__dict__)
+        json.dump(expressions, outfile, sort_keys=True)
+
     return 1
-
-
 
 class Point:
     def __init__(self):
@@ -81,13 +83,14 @@ class Datapoints:
     def __init__(self):
         self.frameID = 0
         self.points = []
+        self.target = 0
+        self.index = 0
 
 
 class FacialExpressionDatapoints:
     def __init__(self):
         self.name = ""
         self.datapoints = []
-
 
 class FEoutput:
     def __init__(self):
@@ -111,14 +114,34 @@ class FEoutput:
         self.a6 = 0
         self.a7 = 0
         self.a8 = 0
+        self.target = 0
+        self.index = 0
 
 
+targets = []
 
-
-
-for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/"):
+i = 0
+j = 0
+for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/"):
+    targets.append([])
     if fileName.endswith(".txt"):
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
+        lines = file.readlines()
+        file.close()
+        for line in lines:
+            if line[0] == "0":
+                targets[j].append(0)
+            else:
+                targets[j].append(i + 1)
+        i = i + 1
+        j = j + 1
+        if i == 9:
+            i = 0
+
+f = 0
+for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/datapoints/"):
+    if fileName.endswith(".txt"):
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
@@ -153,7 +176,9 @@ for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoi
                         p = Point()
                         j = 0
                     j = j + 1
+                d.target = targets[f][i-1]
+                d.index = i
                 facial_expression.datapoints.append(d)
             i = i + 1
+        f = f+ 1
         process_expression(facial_expression)
-
