@@ -3,6 +3,9 @@ $(document).ready(function () {
 });
 
 
+var data = [];
+var labels = [];
+
 var net; // declared outside -> global variable in window scope
 function start() {
   // this gets executed on startup
@@ -41,20 +44,22 @@ console.log('probability that x is class 0: ' + probability_volume2.w[0]);
 }
 
 function original_data(){
-  data = [];
-  labels = [];
+/*  data = [];
+  labels = [];*/
   files = ['a_affirmative_datapoints.json','a_conditional_datapoints.json','a_doubt_question_datapoints.json','a_emphasis_datapoints.json',
 'a_negative_datapoints.json','a_relative_datapoints.json','a_topics_datapoints.json','a_wh_question_datapoints.json','a_yn_question_datapoints.json',
 'b_affirmative_datapoints.json','b_conditional_datapoints.json','b_doubt_question_datapoints.json','b_emphasis_datapoints.json','b_negative_datapoints.json',
 'b_relative_datapoints.json','b_topics_datapoints.json','b_wh_question_datapoints.json','b_yn_question_datapoints.json'];
 
-  console.log(files[0]);
-
   for(file of files){
     console.log('Loading file ' + file);
-    load_JSON(file,prepare_data)
+    load_JSON(file,prepare_data);
   }
 
+  setTimeout(function(){
+    console.log(data);
+    console.log(labels);
+  }, 3000);
 }
 
 function load_JSON(file,callback) {
@@ -75,7 +80,24 @@ function load_JSON(file,callback) {
 }
 
 function prepare_data(response){
-  jsonresponse = JSON.parse(response);
+  jsonResponse = JSON.parse(response);
 
-  console.log(jsonresponse.length);
+  console.log(jsonResponse.length);
+
+  var lineData = [];
+  var lineLabels = [];
+
+  for(line of jsonResponse){
+    for(element in line){
+
+      if(element == 'target'){
+        lineLabels.push(line[element]);
+      }
+      else if(element != 'index'){
+        lineData.push(line[element]);
+      }
+    }
+    data.push(lineData);
+    labels.push(lineLabels);
+  }
 }
