@@ -1,3 +1,6 @@
+$(document).ready(function () {
+  original_data();
+});
 
 
 var net; // declared outside -> global variable in window scope
@@ -34,5 +37,19 @@ trainer.train(x, 0);
 var probability_volume2 = net.forward(x);
 console.log('probability that x is class 0: ' + probability_volume2.w[0]);
 // prints 0.50374
+
+}
+
+function original_data(){
+  data = [];
+  labels = [];
+  files = ['a_affirmative_datapoints.json','a_conditional_datapoints.json','a_doubt_question_datapoints.json','a_emphasis_datapoints.json',
+'a_negative_datapoints.json','a_relative_datapoints.json','a_topics_datapoints.json','a_wh_question_datapoints.json','a_yn_question_datapoints.json',
+'b_affirmative_datapoints.json','b_conditional_datapoints.json','b_doubt_question_datapoints.json','b_emphasis_datapoints.json','b_negative_datapoints.json',
+'b_relative_datapoints.json','b_topics_datapoints.json','b_wh_question_datapoints.json','b_yn_question_datapoints.json'];
+
+  for(file in files){
+    console.log('boas');
+  }
 
 }
