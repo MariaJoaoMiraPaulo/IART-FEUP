@@ -48,8 +48,34 @@ function original_data(){
 'b_affirmative_datapoints.json','b_conditional_datapoints.json','b_doubt_question_datapoints.json','b_emphasis_datapoints.json','b_negative_datapoints.json',
 'b_relative_datapoints.json','b_topics_datapoints.json','b_wh_question_datapoints.json','b_yn_question_datapoints.json'];
 
-  for(file in files){
-    console.log('boas');
+  console.log(files[0]);
+
+  for(file of files){
+    console.log('Loading file ' + file);
+    load_JSON(file,prepare_data)
   }
 
+}
+
+function load_JSON(file,callback) {
+
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', 'JSON/' + file, true);
+
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState == 4 && xobj.status == "200") {
+
+      // .open will NOT return a value but simply returns undefined in async mode so use a callback
+      callback(xobj.responseText);
+
+    }
+  }
+  xobj.send(null);
+}
+
+function prepare_data(response){
+  jsonresponse = JSON.parse(response);
+
+  console.log(jsonresponse.length);
 }
