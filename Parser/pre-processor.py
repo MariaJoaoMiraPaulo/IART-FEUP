@@ -42,6 +42,7 @@ def distance(p0, p1):
 
 def process_expression(fexpression):
     with open(fexpression.name.replace(".txt", ".json"), "w") as outfile:
+        expressions = [];
         expressions = []
         for expression in fexpression.datapoints:
             expression_output = FEoutput()
