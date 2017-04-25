@@ -123,10 +123,10 @@ targets = []
 
 i = 0
 j = 0
-for fileName in os.listdir("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/targets/"):
+for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/"):
     targets.append([])
     if fileName.endswith(".txt"):
-        file = open("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
+        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         for line in lines:
@@ -140,9 +140,9 @@ for fileName in os.listdir("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/ta
             i = 0
 
 f = 0
-for fileName in os.listdir("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/datapoints/"):
+for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/"):
     if fileName.endswith(".txt"):
-        file = open("/home/nuno/Documents/GitHub/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
