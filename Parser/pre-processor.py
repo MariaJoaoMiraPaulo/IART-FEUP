@@ -42,7 +42,6 @@ def distance(p0, p1):
 
 def process_expression(fexpression):
     with open(fexpression.name.replace(".txt", ".json"), "w") as outfile:
-        expressions = [];
         expressions = []
         for expression in fexpression.datapoints:
             expression_output = FEoutput()
@@ -123,8 +122,10 @@ targets = []
 
 i = 0
 j = 0
+files = []
 for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/"):
     targets.append([])
+    files.append(fileName)
     if fileName.endswith(".txt"):
         file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
         lines = file.readlines()
@@ -140,8 +141,7 @@ for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets
             i = 0
 
 f = 0
-for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/"):
-    if fileName.endswith(".txt"):
+for fileName in files:
         file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
