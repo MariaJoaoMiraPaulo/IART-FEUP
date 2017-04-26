@@ -14,6 +14,7 @@ var train_labels = [];
 /* 3/4 of data results in order to test network*/
 var test_labels = [];
 var step_num = 0;
+var iteraction = 0;
 
 // int main
 var lossWindows = new cnnutil.Window(800);
@@ -71,7 +72,7 @@ function original_data() {
            'train/a_doubt_question.json', 'train/a_emphasis.json',
            'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
            'train/a_wh_question.json', 'train/a_yn_question.json',
-           'train/b_affirmative.json', 'train/b_conditional.json', 
+           'train/b_affirmative.json', 'train/b_conditional.json',
            'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
            'train/b_relative.json', 'train/b_topics.json',
            'train/b_wh_question.json', 'train/b_yn_question.json'
@@ -102,7 +103,7 @@ function original_data() {
   setTimeout(function() {
     console.log("Test: " + test_data);
     console.log("Train: ");
-  }, 3000);
+  }, 5000);
 }
 
 function load_JSON(file, callback) {
@@ -185,13 +186,21 @@ function test() {
 }
 
 var load_and_step = function() {
-
+  step_num++;
+  iteraction++;
+  console.log(iteraction);
+  console.log(step_num);
   // train on all networks
   N = data.length;
   var losses = [];
   var trainacc = [];
   testacc = [];
 
+  if(iteraction < N){
+    i=iteraction;
+  }else{
+    iteraction=0;
+  }
 
   var trainer = new convnetjs.Trainer(net, {
     method: 'adadelta',
@@ -199,8 +208,7 @@ var load_and_step = function() {
     batch_size: 10
   });
   var netx = new convnetjs.Vol(1, 1, 20);
-  for (var i = 0; i < N; i++) {
-    step_num++;
+
     netx.w = data[i];
     var stats = trainer.train(netx, train_labels[i]);
 
@@ -215,22 +223,22 @@ var load_and_step = function() {
     var yhat_test = net.getPrediction();
     testAccWindows.add(yhat_test === train_labels[i] ? 1.0 : 0.0);
 
-    // every 100 iterations also draw
-    if (step_num % 100 === 0) {
-      losses.push(lossWindows.get_average());
-      trainacc.push(trainAccWindows.get_average());
-      testacc.push(testAccWindows.get_average());
-    }
 
-    if (step_num % 100 === 0) {
-      lossGraph.add(step_num, losses);
-      lossGraph.drawSelf(document.getElementById("lossgraph"));
+  // every 100 iterations also draw
 
-      trainGraph.add(step_num, trainacc);
-      trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+    losses.push(lossWindows.get_average());
+    trainacc.push(trainAccWindows.get_average());
+    testacc.push(testAccWindows.get_average());
 
-      testGraph.add(step_num, testacc);
-      testGraph.drawSelf(document.getElementById("testaccgraph"));
-    }
-  }
+
+
+    lossGraph.add(step_num, losses);
+    lossGraph.drawSelf(document.getElementById("lossgraph"));
+
+    trainGraph.add(step_num, trainacc);
+    trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+
+    testGraph.add(step_num, testacc);
+    testGraph.drawSelf(document.getElementById("testaccgraph"));
+
 }
