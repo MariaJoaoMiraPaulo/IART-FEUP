@@ -92,7 +92,7 @@ function original_data() {
   //files = ['a_affirmative.json'];
   for (file of train_files) {
     console.log('Loading file ' + file);
-  //  load_JSON(file, prepare_train_data);
+    load_JSON(file, prepare_train_data);
   }
 
    for (file of test_files) {
