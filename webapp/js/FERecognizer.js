@@ -3,9 +3,16 @@ $(document).ready(function() {
 
 });
 
+
 var N;
-var data = [];
-var labels = [];
+/* 3/4 of data in order to train network*/
+var train_data = [];
+/* 1/4 of data in order to test network*/
+var test_data = [];
+/* 1/4 of data results in order to train network*/
+var train_labels = [];
+/* 3/4 of data results in order to test network*/
+var test_labels = [];
 var step_num = 0;
 
 // int main
@@ -60,23 +67,41 @@ function initNetwork() {
 }
 
 function original_data() {
-  /*  data = [];
-    labels = [];*/
-  files = ['a_affirmative_datapoints.json', 'a_conditional_datapoints.json', 'a_doubt_question_datapoints.json', 'a_emphasis_datapoints.json',
-    'a_negative_datapoints.json', 'a_relative_datapoints.json', 'a_topics_datapoints.json', 'a_wh_question_datapoints.json', 'a_yn_question_datapoints.json',
-    'b_affirmative_datapoints.json', 'b_conditional_datapoints.json', 'b_doubt_question_datapoints.json', 'b_emphasis_datapoints.json', 'b_negative_datapoints.json',
-    'b_relative_datapoints.json', 'b_topics_datapoints.json', 'b_wh_question_datapoints.json', 'b_yn_question_datapoints.json'
-  ];
+  train_files = ['train/a_affirmative.json', 'train/a_conditional.json',
+           'train/a_doubt_question.json', 'train/a_emphasis.json',
+           'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
+           'train/a_wh_question.json', 'train/a_yn_question.json',
+           'train/b_affirmative.json', 'train/b_conditional.json', 
+           'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
+           'train/b_relative.json', 'train/b_topics.json',
+           'train/b_wh_question.json', 'train/b_yn_question.json'
+ ];
 
-  //files = ['a_affirmative_datapoints.json'];
-  for (file of files) {
+
+ test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
+           'test/a_doubt_question.json', 'test/a_emphasis.json',
+           'test/a_negative.json', 'test/a_relative.json', 'test/a_topics.json',
+           'test/a_wh_question.json', 'test/a_yn_question.json',
+           'test/b_affirmative.json', 'test/b_conditional.json',
+           'test/b_doubt_question.json', 'test/b_emphasis.json', 'test/b_negative.json',
+           'test/b_relative.json', 'test/b_topics.json',
+           'test/b_wh_question.json', 'test/b_yn_question.json'
+ ];
+
+  //files = ['a_affirmative.json'];
+  for (file of train_files) {
     console.log('Loading file ' + file);
-    load_JSON(file, prepare_data);
+    load_JSON(file, prepare_train_data);
+  }
+
+   for (file of test_files) {
+    console.log('Loading file ' + file);
+    load_JSON(file, prepare_test_data);
   }
 
   setTimeout(function() {
-    console.log(data);
-    console.log(labels);
+    console.log("Test: " + test_data);
+    console.log("Train: ");
   }, 3000);
 }
 
@@ -97,7 +122,7 @@ function load_JSON(file, callback) {
   xobj.send(null);
 }
 
-function prepare_data(response) {
+function prepare_train_data(response) {
   jsonResponse = JSON.parse(response);
 
   console.log(jsonResponse.length);
@@ -114,22 +139,45 @@ function prepare_data(response) {
         lineData.push(line[element]);
       }
     }
-    data.push(lineData);
-    labels.push(label);
+    train_data.push(lineData);
+    train_labels.push(label);
+  }
+}
+
+
+function prepare_test_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  console.log(jsonResponse.length);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    test_data.push(lineData);
+    test_labels.push(label);
   }
 }
 
 function test() {
-  console.log(data);
-  console.log(labels);
+  console.log(test_data);
+  console.log(test_labels);
 
   var i = 0;
-  for (line of data) {
+  for (line of test_data) {
     var x = new convnetjs.Vol(1, 1, 20);
     x.w = line;
     var scores = net.forward(x); // pass forward through network
     // scores is now a Vol() of output activations
-    console.log('Expected Result: ' + labels[i]);
+    console.log('Expected Result: ' + test_labels[i]);
     console.log('Scores:' + scores.w);
     i++;
     scores = null;
@@ -154,18 +202,18 @@ var load_and_step = function() {
   for (var i = 0; i < N; i++) {
     step_num++;
     netx.w = data[i];
-    var stats = trainer.train(netx, labels[i]);
+    var stats = trainer.train(netx, train_labels[i]);
 
 
     var yhat = net.getPrediction();
-    trainAccWindows.add(yhat === labels[i] ? 1.0 : 0.0);
+    trainAccWindows.add(yhat === train_labels[i] ? 1.0 : 0.0);
     lossWindows.add(stats.loss);
 
     var x = new convnetjs.Vol(1, 1, 20);
     x.w = data[i];
     net.forward(x); // pass forward through network
     var yhat_test = net.getPrediction();
-    testAccWindows.add(yhat_test === labels[i] ? 1.0 : 0.0);
+    testAccWindows.add(yhat_test === train_labels[i] ? 1.0 : 0.0);
 
     // every 100 iterations also draw
     if (step_num % 100 === 0) {

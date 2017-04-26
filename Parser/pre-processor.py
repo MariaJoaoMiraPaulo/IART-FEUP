@@ -43,9 +43,7 @@ def distance(p0, p1):
 def process_expression(fexpression):
 
     train = fexpression.datapoints[:int(len(fexpression.datapoints)*3/4)]
-    print(len(train))
     test = fexpression.datapoints[int(len(fexpression.datapoints)*3/4):]
-    print(len(test))
 
     if not os.path.exists("train/"):
          os.makedirs("train/")
@@ -163,11 +161,11 @@ targets = []
 i = 0
 j = 0
 files = []
-for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/"):
+for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/"):
     targets.append([])
     files.append(fileName)
     if fileName.endswith(".txt"):
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         for line in lines:
@@ -182,7 +180,7 @@ for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets
 
 f = 0
 for fileName in files:
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
