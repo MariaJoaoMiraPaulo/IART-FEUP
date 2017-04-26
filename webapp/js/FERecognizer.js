@@ -92,7 +92,7 @@ function original_data() {
   //files = ['a_affirmative.json'];
   for (file of train_files) {
     console.log('Loading file ' + file);
-    load_JSON(file, prepare_train_data);
+  //  load_JSON(file, prepare_train_data);
   }
 
    for (file of test_files) {
@@ -101,8 +101,10 @@ function original_data() {
   }
 
   setTimeout(function() {
-    console.log("Test: " + test_data);
-    console.log("Train: ");
+    console.log("test_data: ");
+    console.log(test_data);
+    console.log("train_data: ");
+    console.log(train_data);
   }, 5000);
 }
 
@@ -209,7 +211,7 @@ var load_and_step = function() {
   });
   var netx = new convnetjs.Vol(1, 1, 20);
 
-    netx.w = data[i];
+    netx.w = train_data[i];
     var stats = trainer.train(netx, train_labels[i]);
 
 
@@ -218,10 +220,10 @@ var load_and_step = function() {
     lossWindows.add(stats.loss);
 
     var x = new convnetjs.Vol(1, 1, 20);
-    x.w = data[i];
+    x.w = test_data[i];
     net.forward(x); // pass forward through network
     var yhat_test = net.getPrediction();
-    testAccWindows.add(yhat_test === train_labels[i] ? 1.0 : 0.0);
+    testAccWindows.add(yhat_test === test_labels[i] ? 1.0 : 0.0);
 
 
   // every 100 iterations also draw
