@@ -41,9 +41,48 @@ def distance(p0, p1):
 
 
 def process_expression(fexpression):
-    with open(fexpression.name.replace(".txt", ".json"), "w") as outfile:
+
+    train = fexpression.datapoints[:len(fexpression.datapoints)*3/4]
+    test = fexpression.datapoints[len(fexpression.datapoints)*1/4:]
+
+
+    if not os.path.exists("train/"):
+         os.makedirs("train/")
+    if not os.path.exists("test/"):
+         os.makedirs("test/")
+
+    with open("train/"+fexpression.name.replace(".txt", ".json"), "w+") as outfile:
         expressions = []
-        for expression in fexpression.datapoints:
+        for expression in train:
+            expression_output = FEoutput()
+            expression_output.index = expression.index
+            expression_output.d1 = distance(expression.points[48], expression.points[54])
+            expression_output.d2 = distance(expression.points[51], expression.points[57])
+            expression_output.d3 = distance(expression.points[62], expression.points[66])
+            expression_output.d4 = distance(expression.points[25], expression.points[31])
+            expression_output.d5 = distance(expression.points[31], expression.points[47])
+            expression_output.d6 = distance(expression.points[25], expression.points[36])
+            expression_output.d7 = distance(expression.points[4], expression.points[0])
+            expression_output.d8 = distance(expression.points[2], expression.points[6])
+            expression_output.d9 = distance(expression.points[23], expression.points[3])
+            expression_output.d10 = distance(expression.points[33], expression.points[11])
+            expression_output.d11 = distance(expression.points[10], expression.points[14])
+            expression_output.d12 = distance(expression.points[8], expression.points[12])
+            expression_output.a1 = angle(expression.points[37], expression.points[40], expression.points[89])
+            expression_output.a2 = angle(expression.points[89], expression.points[43], expression.points[46])
+            expression_output.a3 = angle(expression.points[90], expression.points[20], expression.points[30])
+            expression_output.a4 = angle(expression.points[20], expression.points[30], expression.points[95])
+            expression_output.a5 = angle(expression.points[51], expression.points[48], expression.points[57])
+            expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
+            expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
+            expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
+            expression_output.target = expression.target
+            expressions.append(expression_output.__dict__)
+        json.dump(expressions, outfile, sort_keys=True)
+
+    with open("test/"+fexpression.name.replace(".txt", ".json"), "w+") as outfile:
+        expressions = []
+        for expression in test:
             expression_output = FEoutput()
             expression_output.index = expression.index
             expression_output.d1 = distance(expression.points[48], expression.points[54])
@@ -123,11 +162,11 @@ targets = []
 i = 0
 j = 0
 files = []
-for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/"):
+for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/"):
     targets.append([])
     files.append(fileName)
     if fileName.endswith(".txt"):
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         for line in lines:
@@ -142,7 +181,7 @@ for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets
 
 f = 0
 for fileName in files:
-        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
