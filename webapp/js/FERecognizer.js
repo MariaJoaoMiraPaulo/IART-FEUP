@@ -6,10 +6,17 @@ $(document).ready(function() {
 var N;
 var data = [];
 var labels = [];
+var step_num = 0;
+
+// int main
+var lossWindows = new cnnutil.Window(800);
+var trainAccWindows = new cnnutil.Window(800);
+var testAccWindows = new cnnutil.Window(800);
+var lossGraph, trainGraph, testGraph;
 
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope
 
-function trainNetwork() {
+function initNetwork() {
 
   var layer_defs = [];
   // input layer of size 1x1x20, 20 pontos de input (12-distancias + 8 angulos)
@@ -45,30 +52,14 @@ function trainNetwork() {
   // create a net out of it
   net.makeLayers(layer_defs);
 
-  var trainer = new convnetjs.Trainer(net, {
-    method: 'adadelta',
-    l2_decay: 0.001,
-    batch_size: 10
-  });
-  // forward prop the data
-  var netx = new convnetjs.Vol(1, 1, 20);
-  avloss = 0.0;
-  N = data.length;
-  //iterations
-  for(var it = 0; it < 200; it++){
-    for (var ix = 0; ix < N; ix++) {
-      netx.w = data[ix];
-      var stats = trainer.train(netx, labels[ix]);
-      avloss = stats.cost_loss;
-      console.log(avloss);
-    }
-  }
+  setInterval(load_and_step, 0); // lets go!
+
 }
 
 function original_data() {
   /*  data = [];
     labels = [];*/
-  files = ['a_affirmative_datapoints.json',  'a_conditional_datapoints.json', 'a_doubt_question_datapoints.json', 'a_emphasis_datapoints.json',
+  files = ['a_affirmative_datapoints.json', 'a_conditional_datapoints.json', 'a_doubt_question_datapoints.json', 'a_emphasis_datapoints.json',
     'a_negative_datapoints.json', 'a_relative_datapoints.json', 'a_topics_datapoints.json', 'a_wh_question_datapoints.json', 'a_yn_question_datapoints.json',
     'b_affirmative_datapoints.json', 'b_conditional_datapoints.json', 'b_doubt_question_datapoints.json', 'b_emphasis_datapoints.json', 'b_negative_datapoints.json',
     'b_relative_datapoints.json', 'b_topics_datapoints.json', 'b_wh_question_datapoints.json', 'b_yn_question_datapoints.json'
@@ -127,7 +118,7 @@ function prepare_data(response) {
 
 function test() {
   console.log(data);
-  console.log(labels[0]);
+  console.log(labels);
 
   var i = 0;
   for (line of data) {
@@ -139,5 +130,56 @@ function test() {
     console.log('Scores:' + scores.w);
     i++;
     scores = null;
+  }
+}
+
+var load_and_step = function() {
+  step_num++;
+  // train on all networks
+  N = data.length;
+  var losses = [];
+  var trainacc = [];
+  testacc = [];
+
+
+  var trainer = new convnetjs.Trainer(net, {
+    method: 'adadelta',
+    l2_decay: 0.001,
+    batch_size: 10
+  });
+  var netx = new convnetjs.Vol(1, 1, 20);
+  for (var i = 0; i < N; i++) {
+
+    netx.w = data[i];
+    var stats = trainer.train(netx, labels[i]);
+
+
+    var yhat = net.getPrediction();
+    trainAccWindows.add(yhat === labels[i] ? 1.0 : 0.0);
+    lossWindows.add(stats.loss);
+
+    var x = new convnetjs.Vol(1, 1, 20);
+    x.w = data[i];
+    net.forward(x); // pass forward through network
+    var yhat_test = net.getPrediction();
+    testAccWindows.add(yhat_test === labels[i] ? 1.0 : 0.0);
+
+    // every 100 iterations also draw
+    if (step_num % 100 === 0) {
+      losses.push(lossWindows[i].get_average());
+      trainacc.push(trainAccWindows[i].get_average());
+      testacc.push(testAccWindows[i].get_average());
+    }
+
+    if (step_num % 100 === 0) {
+      lossGraph.add(step_num, losses);
+      lossGraph.drawSelf(document.getElementById("lossgraph"));
+
+      trainGraph.add(step_num, trainacc);
+      trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+
+      testGraph.add(step_num, testacc);
+      testGraph.drawSelf(document.getElementById("testaccgraph"));
+    }
   }
 }
