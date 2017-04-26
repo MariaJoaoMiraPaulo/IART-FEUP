@@ -13,10 +13,13 @@ var lossWindows = new cnnutil.Window(800);
 var trainAccWindows = new cnnutil.Window(800);
 var testAccWindows = new cnnutil.Window(800);
 var lossGraph, trainGraph, testGraph;
-
+legend = ['adadelta'];
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope
 
 function initNetwork() {
+  lossGraph = new cnnvis.MultiGraph(legend);
+  trainGraph = new cnnvis.MultiGraph(legend);
+  testGraph = new cnnvis.MultiGraph(legend);
 
   var layer_defs = [];
   // input layer of size 1x1x20, 20 pontos de input (12-distancias + 8 angulos)
@@ -134,7 +137,7 @@ function test() {
 }
 
 var load_and_step = function() {
-  step_num++;
+
   // train on all networks
   N = data.length;
   var losses = [];
@@ -149,7 +152,7 @@ var load_and_step = function() {
   });
   var netx = new convnetjs.Vol(1, 1, 20);
   for (var i = 0; i < N; i++) {
-
+    step_num++;
     netx.w = data[i];
     var stats = trainer.train(netx, labels[i]);
 
@@ -166,9 +169,9 @@ var load_and_step = function() {
 
     // every 100 iterations also draw
     if (step_num % 100 === 0) {
-      losses.push(lossWindows[i].get_average());
-      trainacc.push(trainAccWindows[i].get_average());
-      testacc.push(testAccWindows[i].get_average());
+      losses.push(lossWindows.get_average());
+      trainacc.push(trainAccWindows.get_average());
+      testacc.push(testAccWindows.get_average());
     }
 
     if (step_num % 100 === 0) {
