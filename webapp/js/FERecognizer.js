@@ -290,7 +290,7 @@ function saveNetwork(){
 
 function loadNetwork(){
 
-  var network_data =document.getElementById("network_data").value; 
+  var network_data =document.getElementById("network_data").value;
   console.log(network_data);
   var json = JSON.parse(network_data);
   console.log("Loading network ... ");
@@ -299,5 +299,12 @@ function loadNetwork(){
   net = new convnetjs.Net(); // create an empty network
   net.fromJSON(json); // load all parameters from JSON
   initGraphs();
+
+  trainer = new convnetjs.Trainer(net, {
+    method: 'adadelta',
+    l2_decay: 0.01,
+    batch_size: 10
+  });
+  
   setInterval(load_and_step, 0); // lets go!
 }
