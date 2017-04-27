@@ -26,6 +26,23 @@ body {
 
 <input id="buttontp" type="submit" value="re-run" onclick="reload();" style="width: 300px; height: 50px;"/>
 
+<br>
+<label>Learning Rate: </label>
+<input id="learning-rate" value="0.01"/>
+<br>
+<label>L2-Decay: </label>
+<input id="l2-decay" value="0.01"/>
+<br>
+<label>Batch-Size: </label>
+<input id="batch-size" value="10"/>
+<br>
+<label>Training method: </label>
+<select id="training-method">
+    <option value="adadelta">adadelta</option>
+    <option value="sgd">sgd</option>
+    <option value="adagrad">adagrad</option>
+  </select>
+
 <h1>Loss vs. Number of examples seen</h1>
 <canvas id="lossgraph" width="800" height="400"></canvas>
 
