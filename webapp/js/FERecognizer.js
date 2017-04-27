@@ -216,22 +216,19 @@ function load_and_step() {
   step_num++;
   testIteraction++;
   trainIteraction++;
-  
-  // train on all networks
-  N1 = test_data.length;
-  N2 = train_data.length;
+
+
+  test_length = test_data.length;
+  train_length = train_data.length;
   var losses = [];
   var trainacc = [];
   testacc = [];
 
-
-  if (testIteraction > N1) {
+  if (testIteraction > test_length) 
     testIteraction = 1;
-  }
 
-  if (trainIteraction > N2) {
+  if (trainIteraction > train_length)
     trainIteraction = 1;
-  }
 
 
   netx = new convnetjs.Vol(1, 1, 20);
@@ -239,7 +236,7 @@ function load_and_step() {
   netx.w = train_data[trainIteraction];
   var stats = trainer.train(netx, train_labels[trainIteraction]);
   avloss = stats.loss;
-  // console.log("loss" + avloss);
+  
   var yhat = net.getPrediction();
   trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
@@ -251,15 +248,11 @@ function load_and_step() {
   var yhat_test = net.getPrediction();
   testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
   if (yhat_test === test_labels[testIteraction]) {
-    console.log("CORRECT:");
-    console.log(yhat_test);
+    console.log("Correct: Result  " + yhat_test + " Expected " + test_labels[testIteraction]);
     console.log(scores.w);
-    console.log(test_labels[testIteraction]);
   } else {
-    console.log("FALSE:");
-    console.log(yhat_test);
+     console.log("False: Result " + yhat_test + " Expected " + test_labels[testIteraction]);
     console.log(scores.w);
-    console.log(test_labels[testIteraction]);
   }
 
 
@@ -282,8 +275,11 @@ function saveNetwork() {
 
   document.getElementById("network_data").innerHTML = "";
 
-  var json = net.toJSON(); // network outputs all of its parameters into json object
-  var netwok_data = JSON.stringify(json); // the entire object is now simply string. You can save this somewhere
+  /* network outputs all of its parameters into json object*/
+  var json = net.toJSON(); 
+
+  /* the entire object is now simply string. You can save this somewhere */
+  var netwok_data = JSON.stringify(json); 
 
   console.log("Saving network ... ");
   document.getElementById("network_data").innerHTML = netwok_data;
@@ -295,8 +291,10 @@ function loadNetwork() {
   var json = JSON.parse(network_data);
   console.log("Loading network ... ");
 
-  net = new convnetjs.Net(); // create an empty network
-  net.fromJSON(json); // load all parameters from JSON
+  /* create an empty network */
+  net = new convnetjs.Net(); 
+  net.fromJSON(json); 
+  /* load all parameters from JSON */
   initGraphs();
 
   trainer = new convnetjs.Trainer(net, {
