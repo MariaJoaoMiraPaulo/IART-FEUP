@@ -16,6 +16,7 @@ var test_labels = [];
 var step_num = 0;
 var testIteraction = 1;
 var trainIteraction = 1;
+var trainer;
 
 // int main
 var lossWindows = new cnnutil.Window(800);
@@ -54,31 +55,39 @@ function initNetwork() {
   // create a net out of it
   net.makeLayers(layer_defs);
 
+  trainer = new convnetjs.Trainer(net, {
+    method: 'adadelta',
+    l2_decay: 0.01,
+    batch_size: 10
+  });
+
+  //train();
+
   setInterval(load_and_step, 0); // lets go!
 
 }
 
 function original_data() {
   train_files = ['train/a_affirmative.json', 'train/a_conditional.json',
-           'train/a_doubt_question.json', 'train/a_emphasis.json',
-           'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
-           'train/a_wh_question.json', 'train/a_yn_question.json',
-           'train/b_affirmative.json', 'train/b_conditional.json',
-           'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
-           'train/b_relative.json', 'train/b_topics.json',
-           'train/b_wh_question.json', 'train/b_yn_question.json'
-];
+    'train/a_doubt_question.json', 'train/a_emphasis.json',
+    'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
+    'train/a_wh_question.json', 'train/a_yn_question.json',
+    'train/b_affirmative.json', 'train/b_conditional.json',
+    'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
+    'train/b_relative.json', 'train/b_topics.json',
+    'train/b_wh_question.json', 'train/b_yn_question.json'
+  ];
 
 
- test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
-           'test/a_doubt_question.json', 'test/a_emphasis.json',
-           'test/a_negative.json', 'test/a_relative.json', 'test/a_topics.json',
-           'test/a_wh_question.json', 'test/a_yn_question.json',
-           'test/b_affirmative.json', 'test/b_conditional.json',
-           'test/b_doubt_question.json', 'test/b_emphasis.json', 'test/b_negative.json',
-           'test/b_relative.json', 'test/b_topics.json',
-           'test/b_wh_question.json', 'test/b_yn_question.json'
- ];
+  test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
+    'test/a_doubt_question.json', 'test/a_emphasis.json',
+    'test/a_negative.json', 'test/a_relative.json', 'test/a_topics.json',
+    'test/a_wh_question.json', 'test/a_yn_question.json',
+    'test/b_affirmative.json', 'test/b_conditional.json',
+    'test/b_doubt_question.json', 'test/b_emphasis.json', 'test/b_negative.json',
+    'test/b_relative.json', 'test/b_topics.json',
+    'test/b_wh_question.json', 'test/b_yn_question.json'
+  ];
 
   //files = ['a_affirmative.json'];
   for (file of train_files) {
@@ -86,7 +95,7 @@ function original_data() {
     load_JSON(file, prepare_train_data);
   }
 
-   for (file of test_files) {
+  for (file of test_files) {
     console.log('Loading file ' + file);
     load_JSON(file, prepare_test_data);
   }
@@ -179,7 +188,7 @@ function test() {
 
 function train() {
 
-var trainer = new convnetjs.Trainer(net, {
+  var trainer = new convnetjs.Trainer(net, {
     learning_rate: 0.01,
     l2_decay: 0.001
   });
@@ -187,12 +196,12 @@ var trainer = new convnetjs.Trainer(net, {
   var netx = new convnetjs.Vol(1, 1, 20);
   avloss = 0.0;
   N = train_data.length;
-    for (var ix = 0; ix < N; ix++) {
-      netx.w = train_data[ix];
-      var stats = trainer.train(netx, train_labels[ix]);
-      avloss = stats.loss;
-      console.log("loss" + avloss);
-    }
+  for (var ix = 0; ix < N; ix++) {
+    netx.w = train_data[ix];
+    var stats = trainer.train(netx, train_labels[ix]);
+    avloss = stats.loss;
+    console.log("loss" + avloss);
+  }
 
 }
 
@@ -207,58 +216,63 @@ var load_and_step = function() {
   var trainacc = [];
   testacc = [];
 
-  if(testIteraction > N1){
-    testIteraction=1;
+  if (testIteraction > N1) {
+    testIteraction = 1;
     console.log("aaaaaaaaaaaaaaaaaaaaaaa");
   }
 
-  if(trainIteraction > N2){
-    trainIteraction=1;
+  if (trainIteraction > N2) {
+    trainIteraction = 1;
     console.log("bbbbbbbbbbbbbbbbbbbbbbbb");
   }
 
-  var trainer = new convnetjs.Trainer(net, {
-    method: 'adadelta',
-    l2_decay: 0.001,
-    batch_size: 10
-  });
   var netx = new convnetjs.Vol(1, 1, 20);
 
-    //netx.w = train_data[trainIteraction];
-    //var stats = trainer.train(netx, train_labels[trainIteraction]);
-    var avloss=0;
+  //netx.w = train_data[trainIteraction];
+  //var stats = trainer.train(netx, train_labels[trainIteraction]);
+  var avloss = 0;
 
-      netx.w = train_data[trainIteraction];
-      var stats = trainer.train(netx, train_labels[trainIteraction]);
-      avloss = stats.loss;
-      console.log("loss" + avloss);
-      var yhat = net.getPrediction();
-      trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
+  netx.w = train_data[trainIteraction];
+  var stats = trainer.train(netx, train_labels[trainIteraction]);
+  avloss = stats.loss;
+  console.log("loss" + avloss);
+  var yhat = net.getPrediction();
+  trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
-    lossWindows.add(avloss);
+  lossWindows.add(avloss);
 
-    var x = new convnetjs.Vol(1, 1, 20);
-    x.w = test_data[testIteraction];
-    var scores = net.forward(x); // pass forward through network
-    var yhat_test = net.getPrediction();
-    testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
-
+  var x = new convnetjs.Vol(1, 1, 20);
+  x.w = test_data[testIteraction];
+  var scores = net.forward(x); // pass forward through network
+  var yhat_test = net.getPrediction();
+  testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
+  if (yhat_test === test_labels[testIteraction]) {
+    console.log("CORRECT:");
+    console.log(yhat_test);
+    console.log(scores.w);
+    console.log(test_labels[testIteraction]);
+  } else {
+    console.log("FALSE:");
+    console.log(yhat_test);
+    console.log(scores.w);
+    console.log(test_labels[testIteraction]);
+  }
 
   // every 100 iterations also draw
 
-    losses.push(lossWindows.get_average());
-    trainacc.push(trainAccWindows.get_average());
-    testacc.push(testAccWindows.get_average());
+  losses.push(lossWindows.get_average());
+  trainacc.push(trainAccWindows.get_average());
+  testacc.push(testAccWindows.get_average());
 
 
 
-    lossGraph.add(step_num, losses);
-    lossGraph.drawSelf(document.getElementById("lossgraph"));
+  lossGraph.add(step_num, losses);
+  lossGraph.drawSelf(document.getElementById("lossgraph"));
 
-    trainGraph.add(step_num, trainacc);
-    trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+  trainGraph.add(step_num, trainacc);
+  trainGraph.drawSelf(document.getElementById("trainaccgraph"));
 
-    testGraph.add(step_num, testacc);
-    testGraph.drawSelf(document.getElementById("testaccgraph"));
+  testGraph.add(step_num, testacc);
+  testGraph.drawSelf(document.getElementById("testaccgraph"));
 
 }
