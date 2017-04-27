@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   original_data();
 
 });
@@ -39,27 +39,55 @@ function initNetwork() {
     out_sy: 1,
     out_depth: 20
   });
+
+  var number_of_hidden_layers = $('#hidden-layers').val();
+  var activation_function = $('#activation-function').val();
+
   // some fully connected layers
-  layer_defs.push({
-    type: 'fc',
-    num_neurons: 20,
-    activation: 'relu'
-  });
+  for (let i = 0; i < number_of_hidden_layers; i++) {
+    layer_defs.push({
+      type: 'fc',
+      num_neurons: 20,
+      activation: activation_function
+    });
+  }
+
+  var activation_function_output = $('#activation-function-for-output-layer').val()
+
   //layer_defs.push({type:'fc', num_neurons:20, activation:'sigmoid'});
   // a softmax classifier predicting probabilities for two classes: 0,1
   layer_defs.push({
-    type: 'softmax',
+    type: activation_function_output,
     num_classes: 10
   });
 
   // create a net out of it
   net.makeLayers(layer_defs);
 
-  trainer = new convnetjs.Trainer(net, {
-    method: 'adadelta',
-    l2_decay: 0.01,
-    batch_size: 10
-  });
+  var learning_rate = $('#learning-rate').val();
+  var l1_decay = $('#l1-decay').val();
+  var l2_decay = $('#l2-decay').val();
+  var batch_size = $('#batch-size').val();
+  var training_method = $('#training-method').val()
+  var momentum = $('#momentum').val();
+
+  if (training_method == 'sgd') {
+    trainer = new convnetjs.Trainer(net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+  }
+  else {
+    trainer = new convnetjs.Trainer(net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+  }
 
   //train();
 
@@ -100,7 +128,7 @@ function original_data() {
     load_JSON(file, prepare_test_data);
   }
 
-  setTimeout(function() {
+  setTimeout(function () {
     console.log("test_data: ");
     console.log(test_data);
     console.log("train_data: ");
@@ -114,7 +142,7 @@ function load_JSON(file, callback) {
   xobj.overrideMimeType("application/json");
   xobj.open('GET', 'JSON/' + file, true);
 
-  xobj.onreadystatechange = function() {
+  xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
 
       // .open will NOT return a value but simply returns undefined in async mode so use a callback
@@ -205,7 +233,7 @@ function train() {
 
 }
 
-var load_and_step = function() {
+var load_and_step = function () {
   step_num++;
   testIteraction++;
   trainIteraction++;
@@ -218,12 +246,10 @@ var load_and_step = function() {
 
   if (testIteraction > N1) {
     testIteraction = 1;
-    console.log("aaaaaaaaaaaaaaaaaaaaaaa");
   }
 
   if (trainIteraction > N2) {
     trainIteraction = 1;
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbb");
   }
 
   var netx = new convnetjs.Vol(1, 1, 20);

@@ -27,8 +27,47 @@ body {
 <input id="buttontp" type="submit" value="re-run" onclick="reload();" style="width: 300px; height: 50px;"/>
 
 <br>
-<label>Learning Rate: </label>
+<br>
+<h4>Hidden Layer Stuff</h4>
+<br>
+<label>Number of hidden layers: </label>
+<input id="hidden-layers" value="1"/>
+<br>
+<label>Number of hidden layers neurons: </label>
+<input id="hidden-layers-neurons" value="20"/>
+<br>
+<label>Activation function for hidden layers: </label>
+<select id="activation-function">
+    <option value="relu">relu</option>
+    <option value="sigmoid">sigmoid</option>
+    <option value="tanh">tanh</option>
+    <option value="maxout">maxout</option>
+</select>
+<br>
+<br>
+<h4>Output Layer Stuff</h4>
+<br>
+<label>Activation function for output layer: </label>
+<select id="activation-function-for-output-layer">
+    <option value="softmax">softmax</option>
+    <option value="svm">svm</option>
+</select>
+<br>
+<br>
+<h4>Training Stuff</h4>
+<br>
+<label>Training method: </label>
+<select id="training-method">
+    <option value="adadelta">adadelta</option>
+    <option value="sgd">sgd</option>
+    <option value="adagrad">adagrad</option>
+</select>
+<br>
+<label>Learning Rate(if you use sgd as a training method): </label>
 <input id="learning-rate" value="0.01"/>
+<br>
+<label>L1-Decay(if you use sgd as a training method): </label>
+<input id="l1-decay" value="0.01"/>
 <br>
 <label>L2-Decay: </label>
 <input id="l2-decay" value="0.01"/>
@@ -36,12 +75,9 @@ body {
 <label>Batch-Size: </label>
 <input id="batch-size" value="10"/>
 <br>
-<label>Training method: </label>
-<select id="training-method">
-    <option value="adadelta">adadelta</option>
-    <option value="sgd">sgd</option>
-    <option value="adagrad">adagrad</option>
-  </select>
+<label>Momentum(if you use sgd as a training method): </label>
+<input id="momentum" value="0.9"/>
+<br>
 
 <h1>Loss vs. Number of examples seen</h1>
 <canvas id="lossgraph" width="800" height="400"></canvas>
