@@ -14,7 +14,8 @@ var train_labels = [];
 /* 3/4 of data results in order to test network*/
 var test_labels = [];
 var step_num = 0;
-var iteraction = 0;
+var testIteraction = 0;
+var trainIteraction = 0;
 
 // int main
 var lossWindows = new cnnutil.Window(800);
@@ -189,19 +190,22 @@ function test() {
 
 var load_and_step = function() {
   step_num++;
-  iteraction++;
-  console.log(iteraction);
+  testIteraction++;
+  trainIteraction++;
   console.log(step_num);
   // train on all networks
-  N = data.length;
+  N1 = test_data.length;
+  N2 = train_data.length;
   var losses = [];
   var trainacc = [];
   testacc = [];
 
-  if(iteraction < N){
-    i=iteraction;
-  }else{
-    iteraction=0;
+  if(testIteraction > N1){
+    testIteraction=0;
+  }
+
+  if(trainIteraction > N2){
+    trainIteraction=0;
   }
 
   var trainer = new convnetjs.Trainer(net, {
@@ -211,19 +215,19 @@ var load_and_step = function() {
   });
   var netx = new convnetjs.Vol(1, 1, 20);
 
-    netx.w = train_data[i];
-    var stats = trainer.train(netx, train_labels[i]);
+    netx.w = train_data[trainIteraction];
+    var stats = trainer.train(netx, train_labels[trainIteraction]);
 
 
     var yhat = net.getPrediction();
-    trainAccWindows.add(yhat === train_labels[i] ? 1.0 : 0.0);
+    trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
     lossWindows.add(stats.loss);
 
     var x = new convnetjs.Vol(1, 1, 20);
-    x.w = test_data[i];
+    x.w = test_data[testIteraction];
     net.forward(x); // pass forward through network
     var yhat_test = net.getPrediction();
-    testAccWindows.add(yhat_test === test_labels[i] ? 1.0 : 0.0);
+    testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
 
 
   // every 100 iterations also draw
