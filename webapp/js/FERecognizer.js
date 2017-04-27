@@ -14,8 +14,8 @@ var train_labels = [];
 /* 3/4 of data results in order to test network*/
 var test_labels = [];
 var step_num = 0;
-var testIteraction = 0;
-var trainIteraction = 0;
+var testIteraction = 1;
+var trainIteraction = 1;
 
 // int main
 var lossWindows = new cnnutil.Window(800);
@@ -42,17 +42,7 @@ function initNetwork() {
   layer_defs.push({
     type: 'fc',
     num_neurons: 20,
-    activation: 'sigmoid'
-  });
-  layer_defs.push({
-    type: 'fc',
-    num_neurons: 20,
-    activation: 'sigmoid'
-  });
-  layer_defs.push({
-    type: 'fc',
-    num_neurons: 20,
-    activation: 'sigmoid'
+    activation: 'relu'
   });
   //layer_defs.push({type:'fc', num_neurons:20, activation:'sigmoid'});
   // a softmax classifier predicting probabilities for two classes: 0,1
@@ -77,7 +67,7 @@ function original_data() {
            'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
            'train/b_relative.json', 'train/b_topics.json',
            'train/b_wh_question.json', 'train/b_yn_question.json'
- ];
+];
 
 
  test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
@@ -129,7 +119,6 @@ function load_JSON(file, callback) {
 function prepare_train_data(response) {
   jsonResponse = JSON.parse(response);
 
-  console.log(jsonResponse.length);
 
   var label;
 
@@ -188,11 +177,29 @@ function test() {
   }
 }
 
+function train() {
+
+var trainer = new convnetjs.Trainer(net, {
+    learning_rate: 0.01,
+    l2_decay: 0.001
+  });
+  // forward prop the data
+  var netx = new convnetjs.Vol(1, 1, 20);
+  avloss = 0.0;
+  N = train_data.length;
+    for (var ix = 0; ix < N; ix++) {
+      netx.w = train_data[ix];
+      var stats = trainer.train(netx, train_labels[ix]);
+      avloss = stats.loss;
+      console.log("loss" + avloss);
+    }
+
+}
+
 var load_and_step = function() {
   step_num++;
   testIteraction++;
   trainIteraction++;
-  console.log(step_num);
   // train on all networks
   N1 = test_data.length;
   N2 = train_data.length;
@@ -201,11 +208,13 @@ var load_and_step = function() {
   testacc = [];
 
   if(testIteraction > N1){
-    testIteraction=0;
+    testIteraction=1;
+    console.log("aaaaaaaaaaaaaaaaaaaaaaa");
   }
 
   if(trainIteraction > N2){
-    trainIteraction=0;
+    trainIteraction=1;
+    console.log("bbbbbbbbbbbbbbbbbbbbbbbb");
   }
 
   var trainer = new convnetjs.Trainer(net, {
@@ -215,17 +224,22 @@ var load_and_step = function() {
   });
   var netx = new convnetjs.Vol(1, 1, 20);
 
-    netx.w = train_data[trainIteraction];
-    var stats = trainer.train(netx, train_labels[trainIteraction]);
+    //netx.w = train_data[trainIteraction];
+    //var stats = trainer.train(netx, train_labels[trainIteraction]);
+    var avloss=0;
 
+      netx.w = train_data[trainIteraction];
+      var stats = trainer.train(netx, train_labels[trainIteraction]);
+      avloss = stats.loss;
+      console.log("loss" + avloss);
+      var yhat = net.getPrediction();
+      trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
-    var yhat = net.getPrediction();
-    trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
-    lossWindows.add(stats.loss);
+    lossWindows.add(avloss);
 
     var x = new convnetjs.Vol(1, 1, 20);
     x.w = test_data[testIteraction];
-    net.forward(x); // pass forward through network
+    var scores = net.forward(x); // pass forward through network
     var yhat_test = net.getPrediction();
     testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
 

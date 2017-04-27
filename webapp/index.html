@@ -22,17 +22,18 @@ body {
 <div id="egdiv"></div>
 
 <button onclick="initNetwork()">JUST DO IT</button>
-<button onclick="test()">Test</button>
+<button onclick="train()">Train</button>
 
 <input id="buttontp" type="submit" value="re-run" onclick="reload();" style="width: 300px; height: 50px;"/>
 
 <h1>Loss vs. Number of examples seen</h1>
 <canvas id="lossgraph" width="800" height="400"></canvas>
 
+<h1>Training Accuracy vs. Number of examples seen</h1>
+<canvas id="trainaccgraph" width="800" height="400"></canvas>
+
 <h1>Testing Accuracy vs. Number of examples seen</h1>
 <canvas id="testaccgraph" width="800" height="400"></canvas>
 
-<h1>Training Accuracy vs. Number of examples seen</h1>
-<canvas id="trainaccgraph" width="800" height="400"></canvas>
 </body>
 </html>
