@@ -3,7 +3,6 @@ $(document).ready(function() {
 
 });
 
-
 var N;
 /* 3/4 of data in order to train network*/
 var train_data = [];
@@ -25,10 +24,15 @@ var lossGraph, trainGraph, testGraph;
 legend = ['adadelta'];
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope
 
-function initNetwork() {
+function initGraphs() {
   lossGraph = new cnnvis.MultiGraph(legend);
   trainGraph = new cnnvis.MultiGraph(legend);
   testGraph = new cnnvis.MultiGraph(legend);
+}
+
+
+function initNetwork() {
+  initGraphs();
 
   var layer_defs = [];
   // input layer of size 1x1x20, 20 pontos de input (12-distancias + 8 angulos)
@@ -53,8 +57,8 @@ function initNetwork() {
 
   // create a net out of it
   net.makeLayers(layer_defs);
-
   setInterval(load_and_step, 0); // lets go!
+
 
 }
 
@@ -191,12 +195,12 @@ var trainer = new convnetjs.Trainer(net, {
       netx.w = train_data[ix];
       var stats = trainer.train(netx, train_labels[ix]);
       avloss = stats.loss;
-      console.log("loss" + avloss);
+      //console.log("loss" + avloss);
     }
 
 }
 
-var load_and_step = function() {
+ function load_and_step() {
   step_num++;
   testIteraction++;
   trainIteraction++;
@@ -209,12 +213,10 @@ var load_and_step = function() {
 
   if(testIteraction > N1){
     testIteraction=1;
-    console.log("aaaaaaaaaaaaaaaaaaaaaaa");
   }
 
   if(trainIteraction > N2){
     trainIteraction=1;
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbb");
   }
 
   var trainer = new convnetjs.Trainer(net, {
@@ -231,7 +233,7 @@ var load_and_step = function() {
       netx.w = train_data[trainIteraction];
       var stats = trainer.train(netx, train_labels[trainIteraction]);
       avloss = stats.loss;
-      console.log("loss" + avloss);
+     // console.log("loss" + avloss);
       var yhat = net.getPrediction();
       trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
@@ -250,8 +252,6 @@ var load_and_step = function() {
     trainacc.push(trainAccWindows.get_average());
     testacc.push(testAccWindows.get_average());
 
-
-
     lossGraph.add(step_num, losses);
     lossGraph.drawSelf(document.getElementById("lossgraph"));
 
@@ -261,4 +261,28 @@ var load_and_step = function() {
     testGraph.add(step_num, testacc);
     testGraph.drawSelf(document.getElementById("testaccgraph"));
 
+}
+
+function saveNetwork(){
+
+  var json = net.toJSON(); // network outputs all of its parameters into json object
+  var netwok_data = JSON.stringify(json); // the entire object is now simply string. You can save this somewhere
+
+  console.log("Saving network ... ");
+
+  $("#network_data").html(netwok_data);
+}
+
+function loadNetwork(){
+
+  var network_data =document.getElementById("network_data").value; 
+  console.log(network_data);
+  var json = JSON.parse(network_data);
+  console.log("Loading network ... ");
+
+
+  net = new convnetjs.Net(); // create an empty network
+  net.fromJSON(json); // load all parameters from JSON
+  initGraphs();
+  setInterval(load_and_step, 0); // lets go!
 }
