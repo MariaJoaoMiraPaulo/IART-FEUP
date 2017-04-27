@@ -278,23 +278,22 @@ function train() {
 
 }
 
-function saveNetwork(){
+function saveNetwork() {
+
+  document.getElementById("network_data").innerHTML = "";
 
   var json = net.toJSON(); // network outputs all of its parameters into json object
   var netwok_data = JSON.stringify(json); // the entire object is now simply string. You can save this somewhere
 
   console.log("Saving network ... ");
-
-  $("#network_data").html(netwok_data);
+  document.getElementById("network_data").innerHTML = netwok_data;
 }
 
-function loadNetwork(){
+function loadNetwork() {
 
-  var network_data =document.getElementById("network_data").value;
-  console.log(network_data);
+  var network_data = document.getElementById("network_data").value;
   var json = JSON.parse(network_data);
   console.log("Loading network ... ");
-
 
   net = new convnetjs.Net(); // create an empty network
   net.fromJSON(json); // load all parameters from JSON
@@ -305,6 +304,6 @@ function loadNetwork(){
     l2_decay: 0.01,
     batch_size: 10
   });
-  
+
   setInterval(load_and_step, 0); // lets go!
 }
