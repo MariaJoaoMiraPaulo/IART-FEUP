@@ -1,76 +1,154 @@
+var N;
+/* 3/4 of data in order to train network*/
+var train_data = [];
+/* 1/4 of data in order to test network*/
+var test_data = [];
+/* 1/4 of data results in order to train network*/
+var train_labels = [];
+/* 3/4 of data results in order to test network*/
+var test_labels = [];
+var step_num = 0;
+var testIteraction = 1;
+var trainIteraction = 1;
+var trainer;
+var intervalId;
+var learning_rate;
+var l1_decay;
+var l2_decay;
+var batch_size;
+var training_method;
+var momentum;
+var lossWindows;
+var trainAccWindows;
+var testAccWindows;
+var lossGraph, trainGraph, testGraph;
+var activation_function_output;
+var number_of_hidden_layers;
+var activation_function;
+var netx;
+var avloss = 0;
+
+var net = new convnetjs.Net(); // declared outside -> global variable in window scope 
+
 $(document).ready(function () {
   original_data();
-
 });
 
-var N;
-var data = [];
-var labels = [];
-
-var net = new convnetjs.Net(); // declared outside -> global variable in window scope
-
-function trainNetwork() {
-  // this gets executed on startup
-  //...
-
+function initNetwork() {
   var layer_defs = [];
-  // input layer of size 1x1x20, 20 pontos de input (12-distancias + 8 angulos)
+  setPreferences();
+  initGraphs();
+
+  /* Input layer of size 1x1x20, 20 input points (12-distances + 8 angles)*/
   layer_defs.push({
     type: 'input',
     out_sx: 1,
     out_sy: 1,
     out_depth: 20
   });
-  // some fully connected layers
+
+  /* Fully connected layers */
+  for (let i = 0; i < number_of_hidden_layers; i++) {
+    layer_defs.push({
+      type: 'fc',
+      num_neurons: 20,
+      activation: activation_function
+    });
+  }
+
+/* Output layer */
   layer_defs.push({
-    type: 'fc',
-    num_neurons: 20,
-    activation: 'relu'
-  });
-  //layer_defs.push({type:'fc', num_neurons:20, activation:'sigmoid'});
-  // a softmax classifier predicting probabilities for two classes: 0,1
-  layer_defs.push({
-    type: 'softmax',
+    type: activation_function_output,
     num_classes: 10
   });
 
-  // create a net out of it
   net.makeLayers(layer_defs);
+  setPreferences();
+  initTrainer();
+  intervalId = setInterval(load_and_step, 0);
+}
 
-  var trainer = new convnetjs.Trainer(net, {
-    learning_rate: 0.01,
-    l2_decay: 0.001
-  });
-  // forward prop the data
-  var netx = new convnetjs.Vol(1, 1, 20);
-  avloss = 0.0;
-  N = data.length;
-  for (var ix = 0; ix < N; ix++) {
-    netx.w = data[ix];
-    var stats = trainer.train(netx, labels[ix]);
-    avloss += stats.loss;
-    console.log(avloss);
+
+function setPreferences(){
+
+  activation_function_output = $('#activation-function-for-output-layer').val();
+  number_of_hidden_layers = $('#hidden-layers').val();
+  activation_function = $('#activation-function').val();
+  learning_rate = $('#learning-rate').val();  
+  l1_decay = $('#l1-decay').val();
+  l2_decay = $('#l2-decay').val();
+  batch_size = $('#batch-size').val();
+  training_method = $('#training-method').val();
+  momentum = $('#momentum').val();
+}
+
+function initGraphs() {
+
+  lossWindows = new cnnutil.Window(800);
+  trainAccWindows = new cnnutil.Window(800);
+  testAccWindows = new cnnutil.Window(800);
+  lossGraph, trainGraph, testGraph;
+
+  if (training_method)
+    legend = [training_method];
+  else legend = ['adadelta'];
+
+  lossGraph = new cnnvis.MultiGraph(legend);
+  trainGraph = new cnnvis.MultiGraph(legend);
+  testGraph = new cnnvis.MultiGraph(legend);
+}
+
+function initTrainer() {
+  if (training_method == 'sgd') {
+    trainer = new convnetjs.Trainer(net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+  } else {
+    trainer = new convnetjs.Trainer(net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
   }
 }
 
 function original_data() {
-  /*  data = [];
-    labels = [];*/
-  files = ['a_affirmative_datapoints.json', 'a_conditional_datapoints.json', 'a_doubt_question_datapoints.json', 'a_emphasis_datapoints.json',
-    'a_negative_datapoints.json', 'a_relative_datapoints.json', 'a_topics_datapoints.json', 'a_wh_question_datapoints.json', 'a_yn_question_datapoints.json',
-    'b_affirmative_datapoints.json', 'b_conditional_datapoints.json', 'b_doubt_question_datapoints.json', 'b_emphasis_datapoints.json', 'b_negative_datapoints.json',
-    'b_relative_datapoints.json', 'b_topics_datapoints.json', 'b_wh_question_datapoints.json', 'b_yn_question_datapoints.json'];
+  train_files = ['train/a_affirmative.json', 'train/a_conditional.json',
+    'train/a_doubt_question.json', 'train/a_emphasis.json',
+    'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
+    'train/a_wh_question.json', 'train/a_yn_question.json',
+    'train/b_affirmative.json', 'train/b_conditional.json',
+    'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
+    'train/b_relative.json', 'train/b_topics.json',
+    'train/b_wh_question.json', 'train/b_yn_question.json'
+  ];
 
-  //files = ['a_affirmative_datapoints.json'];
-  for (file of files) {
-    console.log('Loading file ' + file);
-    load_JSON(file, prepare_data);
-  }
+
+  test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
+    'test/a_doubt_question.json', 'test/a_emphasis.json',
+    'test/a_negative.json', 'test/a_relative.json', 'test/a_topics.json',
+    'test/a_wh_question.json', 'test/a_yn_question.json',
+    'test/b_affirmative.json', 'test/b_conditional.json',
+    'test/b_doubt_question.json', 'test/b_emphasis.json', 'test/b_negative.json',
+    'test/b_relative.json', 'test/b_topics.json',
+    'test/b_wh_question.json', 'test/b_yn_question.json'
+  ];
+
+
+  for (file of train_files)
+    load_JSON(file, prepare_train_data);
+
+  for (file of test_files)
+    load_JSON(file, prepare_test_data);
 
   setTimeout(function () {
-    console.log(data);
-    console.log(labels);
-  }, 3000);
+    console.log("Loaded data");
+  }, 5000);
 }
 
 function load_JSON(file, callback) {
@@ -90,7 +168,29 @@ function load_JSON(file, callback) {
   xobj.send(null);
 }
 
-function prepare_data(response) {
+function prepare_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    train_data.push(lineData);
+    train_labels.push(label);
+  }
+}
+
+
+function prepare_test_data(response) {
   jsonResponse = JSON.parse(response);
 
   console.log(jsonResponse.length);
@@ -107,81 +207,106 @@ function prepare_data(response) {
         lineData.push(line[element]);
       }
     }
-    data.push(lineData);
-    labels.push(label);
+    test_data.push(lineData);
+    test_labels.push(label);
   }
 }
-/*
-function test(){
-  var x = new convnetjs.Vol(1,1,20);
-  x.w[0] = 0.9065846950924712;
-  x.w[1] = 0.7431822894135484;
-  x.w[2] = 1.057387971937015;
-  x.w[3] = 0.35112476303914236;
-  x.w[4] = 0.5973611729782062;
-  x.w[5] = 0.29241697239288705;
-  x.w[6] = 0.45789930466823864;
-  x.w[7] = 0.21919092451634095;
-  x.w[8] = 26.75948000242157;
-  x.w[9] = 9.127165715598663;
-  x.w[10] = 5.127947055108882;
-  x.w[11] = 17.61661695672583;
-  x.w[12] = 9.026716789619597;
-  x.w[13] = 0.13901438774456015;
-  x.w[14] = 48.549585065168166;
-  x.w[15] = 32.62042121125966;
-  x.w[16] = 12.189843846415746;
-  x.w[17] = 16.773005037857704;
-  x.w[18] = 5.152003493787622;
-  x.w[19] = 8.954682462265186;
-// a shortcut for the above is var x = new convnetjs.Vol([0.5, -1.3]);
-var scores = net.forward(x); // pass forward through network
-// scores is now a Vol() of output activations
-console.log('Scores:'  + scores.w);
-console.log('Expected Result: 0')
 
-var y = new convnetjs.Vol(1,1,20); 
-  y.w[0] = 0.5249305206330519;
-  y.w[1] = 1.087375664664462;
-  y.w[2] = 1.05387120677727;
-  y.w[3] = 0.43314720887515573;
-  y.w[4] = 0.497061196283857;
-  y.w[5] = 0.2335505493039744;
-  y.w[6] = 1.27277081396257;
-  y.w[7] = 0.5478535876715201;
-  y.w[8] =23.42626997624679;
-  y.w[9] = 6.7908616537226125;
-  y.w[10] = 3.1276145862301967;
-  y.w[11] =11.839522160965814;
-  y.w[12] = 6.408958807793978;
-  y.w[13] = 0.061619802012007695;
-  y.w[14] = 32.663031656599145;
-  y.w[15] = 21.342365098554524;
-  y.w[16] = 8.151401903967184;
-  y.w[17] = 11.876271468773325;
-  y.w[18] = 3.2703065605536223;
-  y.w[19] = 6.69890267133357;
-// a shortcut for the above is var x = new convnetjs.Vol([0.5, -1.3]);
-var scores_2 = net.forward(y); // pass forward through network
-// scores is now a Vol() of output activations
-console.log('Scores:'  + scores_2.w);
-console.log('Expected Result: 8')
+function load_and_step() {
+  step_num++;
+  testIteraction++;
+  trainIteraction++;
 
-}*/
 
-function test() {
-  console.log(data);
-  console.log(labels[0]);
+  test_length = test_data.length;
+  train_length = train_data.length;
+  var losses = [];
+  var trainacc = [];
+  testacc = [];
 
-  var i = 0;
-  for (line of data) {
-    var x = new convnetjs.Vol(1, 1, 20);
-    x.w = line;
-    var scores = net.forward(x); // pass forward through network
-    // scores is now a Vol() of output activations
-    console.log('Scores:' + scores.w);
-    console.log('Expected Result: ' + labels[i]);
-    i++; 
-    scores = null;
+  if (testIteraction > test_length) 
+    testIteraction = 1;
+
+  if (trainIteraction > train_length)
+    trainIteraction = 1;
+
+
+  netx = new convnetjs.Vol(1, 1, 20);
+
+  netx.w = train_data[trainIteraction];
+  var stats = trainer.train(netx, train_labels[trainIteraction]);
+  avloss = stats.loss;
+  
+  var yhat = net.getPrediction();
+  trainAccWindows.add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
+
+  lossWindows.add(avloss);
+
+  var x = new convnetjs.Vol(1, 1, 20);
+  x.w = test_data[testIteraction];
+  var scores = net.forward(x); // pass forward through network
+  var yhat_test = net.getPrediction();
+  testAccWindows.add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
+  if (yhat_test === test_labels[testIteraction]) {
+    console.log("Correct: Result  " + yhat_test + " Expected " + test_labels[testIteraction]);
+    console.log(scores.w);
+  } else {
+     console.log("False: Result " + yhat_test + " Expected " + test_labels[testIteraction]);
+    console.log(scores.w);
   }
+
+
+  losses.push(lossWindows.get_average());
+  trainacc.push(trainAccWindows.get_average());
+  testacc.push(testAccWindows.get_average());
+
+  lossGraph.add(step_num, losses);
+  lossGraph.drawSelf(document.getElementById("lossgraph"));
+
+  trainGraph.add(step_num, trainacc);
+  trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+
+  testGraph.add(step_num, testacc);
+  testGraph.drawSelf(document.getElementById("testaccgraph"));
+
+}
+
+function saveNetwork() {
+
+  document.getElementById("network_data").innerHTML = "";
+
+  /* network outputs all of its parameters into json object*/
+  var json = net.toJSON(); 
+
+  /* the entire object is now simply string. You can save this somewhere */
+  var netwok_data = JSON.stringify(json); 
+
+  console.log("Saving network ... ");
+  document.getElementById("network_data").innerHTML = netwok_data;
+}
+
+function loadNetwork() {
+
+  var network_data = document.getElementById("network_data").value;
+  var json = JSON.parse(network_data);
+  console.log("Loading network ... ");
+
+  /* create an empty network */
+  net = new convnetjs.Net(); 
+  net.fromJSON(json); 
+  /* load all parameters from JSON */
+  initGraphs();
+
+  trainer = new convnetjs.Trainer(net, {
+    method: 'adadelta',
+    l2_decay: 0.01,
+    batch_size: 10
+  });
+
+  intervalId = setInterval(load_and_step, 0);
+}
+
+function stopNetwork() {
+  console.log("Stoping Network...");
+  clearInterval(intervalId);
 }
