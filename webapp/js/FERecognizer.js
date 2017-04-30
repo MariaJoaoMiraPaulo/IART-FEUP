@@ -37,7 +37,7 @@ $(document).ready(function () {
 
 function initNetwork() {
   //Shuffles the data while keeping targets synced
-  //shuffleData();
+  shuffleData();
   var layer_defs = [];
   setPreferences();
   initGraphs();
@@ -226,11 +226,11 @@ function load_and_step() {
   var trainacc = [];
   var testacc = [];
 
-  if (testIteraction > test_length)
-    testIteraction = 1;
+  if (testIteraction >= test_length)
+    testIteraction = 0;
 
-  if (trainIteraction > train_length)
-    trainIteraction = 1;
+  if (trainIteraction >= train_length)
+    trainIteraction = 0;
 
 
   netx = new convnetjs.Vol(1, 1, 20);
@@ -249,36 +249,37 @@ function load_and_step() {
   var scores = net.forward(x); // pass forward through network
   var yhat_test = net.getPrediction();
   testAccWindows[test_labels[testIteraction]].add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
-  if (yhat_test === test_labels[testIteraction]) {
+  /*if (yhat_test === test_labels[testIteraction]) {
     console.log("Correct: Result  " + yhat_test + " Expected " + test_labels[testIteraction]);
     console.log(scores.w);
   } else {
     console.log("False: Result " + yhat_test + " Expected " + test_labels[testIteraction]);
     console.log(scores.w);
+  }*/
+
+  if (step_num % 300 === 0) {
+    for (var i = 0; i < legend.length; i++) {
+      if (lossWindows[i].get_average() != -1) {
+        losses.push(lossWindows[i].get_average());
+      }
+      if (lossWindows[i].get_average() != -1) {
+        trainacc.push(trainAccWindows[i].get_average());
+      }
+      if (lossWindows[i].get_average() != -1) {
+        testacc.push(testAccWindows[i].get_average());
+      }
+
+    }
+
+    lossGraph.add(step_num, losses);
+    lossGraph.drawSelf(document.getElementById("lossgraph"));
+
+    trainGraph.add(step_num, trainacc);
+    trainGraph.drawSelf(document.getElementById("trainaccgraph"));
+
+    testGraph.add(step_num, testacc);
+    testGraph.drawSelf(document.getElementById("testaccgraph"));
   }
-
-  for (var i = 0; i < legend.length; i++) {
-    if (lossWindows[i].get_average() != -1) {
-      losses.push(lossWindows[i].get_average());
-    }
-    if (lossWindows[i].get_average() != -1) {
-      trainacc.push(trainAccWindows[i].get_average());
-    }
-    if (lossWindows[i].get_average() != -1) {
-      testacc.push(testAccWindows[i].get_average());
-    }
-
-  }
-
-  lossGraph.add(step_num, losses);
-  lossGraph.drawSelf(document.getElementById("lossgraph"));
-
-  trainGraph.add(step_num, trainacc);
-  trainGraph.drawSelf(document.getElementById("trainaccgraph"));
-
-  testGraph.add(step_num, testacc);
-  testGraph.drawSelf(document.getElementById("testaccgraph"));
-
 }
 
 function saveNetwork() {
@@ -300,7 +301,7 @@ function loadNetwork() {
   var network_data = document.getElementById("network_data").value;
   var json = JSON.parse(network_data);
   console.log("Loading network ... ");
-
+  shuffleData();
   /* create an empty network */
   net = new convnetjs.Net();
   net.fromJSON(json);
