@@ -28,6 +28,7 @@ var activation_function;
 var netx;
 var avloss = 0;
 var legend = ['neutra', 'affirmative', 'conditional', 'doubt_question', 'emphasis', 'negative', 'relative', 'topics', 'wh_question', 'yn_question'];
+// paper values              .76             .65             .84             .88         .44         .59       .80         .77           .73
 var stats;
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope 
 

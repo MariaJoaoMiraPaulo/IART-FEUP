@@ -67,6 +67,24 @@ def process_expression(fexpression):
             expression_output.d10 = distance(expression.points[33], expression.points[11])
             expression_output.d11 = distance(expression.points[10], expression.points[14])
             expression_output.d12 = distance(expression.points[8], expression.points[12])
+            expression_output.d13 = distance(expression.points[90], expression.points[95])
+            expression_output.d14 = distance(expression.points[16], expression.points[26])
+            expression_output.d15 = distance(expression.points[30], expression.points[95])
+            expression_output.d16 = distance(expression.points[20], expression.points[90])
+            expression_output.d17 = distance(expression.points[21], expression.points[4])
+            expression_output.d18 = distance(expression.points[24], expression.points[1])
+            expression_output.d19 = distance(expression.points[38], expression.points[6])
+            expression_output.d20 = distance(expression.points[37], expression.points[46])
+            expression_output.d21 = distance(expression.points[32], expression.points[9])
+            expression_output.d22 = distance(expression.points[47], expression.points[36])
+            expression_output.d23 = distance(expression.points[35], expression.points[12])
+            expression_output.d24 = distance(expression.points[45], expression.points[14])
+            expression_output.d25 = distance(expression.points[39], expression.points[69])
+            expression_output.d26 = distance(expression.points[44], expression.points[85])
+            expression_output.d27 = distance(expression.points[53], expression.points[43])
+            expression_output.d28 = distance(expression.points[51], expression.points[89])
+            expression_output.d29 = distance(expression.points[40], expression.points[49])
+            expression_output.d30 = distance(expression.points[77], expression.points[57])
             expression_output.a1 = angle(expression.points[37], expression.points[40], expression.points[89])
             expression_output.a2 = angle(expression.points[89], expression.points[43], expression.points[46])
             expression_output.a3 = angle(expression.points[90], expression.points[20], expression.points[30])
@@ -96,6 +114,24 @@ def process_expression(fexpression):
             expression_output.d10 = distance(expression.points[33], expression.points[11])
             expression_output.d11 = distance(expression.points[10], expression.points[14])
             expression_output.d12 = distance(expression.points[8], expression.points[12])
+            expression_output.d13 = distance(expression.points[90], expression.points[95])
+            expression_output.d14 = distance(expression.points[16], expression.points[26])
+            expression_output.d15 = distance(expression.points[30], expression.points[95])
+            expression_output.d16 = distance(expression.points[20], expression.points[90])
+            expression_output.d17 = distance(expression.points[21], expression.points[4])
+            expression_output.d18 = distance(expression.points[24], expression.points[1])
+            expression_output.d19 = distance(expression.points[38], expression.points[6])
+            expression_output.d20 = distance(expression.points[37], expression.points[46])
+            expression_output.d21 = distance(expression.points[32], expression.points[9])
+            expression_output.d22 = distance(expression.points[47], expression.points[36])
+            expression_output.d23 = distance(expression.points[35], expression.points[12])
+            expression_output.d24 = distance(expression.points[45], expression.points[14])
+            expression_output.d25 = distance(expression.points[39], expression.points[69])
+            expression_output.d26 = distance(expression.points[44], expression.points[85])
+            expression_output.d27 = distance(expression.points[53], expression.points[43])
+            expression_output.d28 = distance(expression.points[51], expression.points[89])
+            expression_output.d29 = distance(expression.points[40], expression.points[49])
+            expression_output.d30 = distance(expression.points[77], expression.points[57])
             expression_output.a1 = angle(expression.points[37], expression.points[40], expression.points[89])
             expression_output.a2 = angle(expression.points[89], expression.points[43], expression.points[46])
             expression_output.a3 = angle(expression.points[90], expression.points[20], expression.points[30])
@@ -161,11 +197,11 @@ targets = []
 i = 0
 j = 0
 files = []
-for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/"):
+for fileName in os.listdir("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/"):
     targets.append([])
     files.append(fileName)
     if fileName.endswith(".txt"):
-        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
+        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/targets/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         for line in lines:
@@ -180,7 +216,7 @@ for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IAR
 
 f = 0
 for fileName in files:
-        file = open("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
+        file = open("/home/pedroc/Documents/IART-FEUP/GFEData/RAW/datapoints/" + fileName, 'r')
         lines = file.readlines()
         file.close()
         i = 0
