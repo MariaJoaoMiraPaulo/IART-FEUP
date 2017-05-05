@@ -25,6 +25,7 @@ var lossGraph, trainGraph, testGraph;
 var activation_function_output;
 var number_of_hidden_layers;
 var activation_function;
+var number_of_neurons;
 var netx;
 var avloss = 0;
 var legend = ['neutra', 'affirmative', 'conditional', 'doubt_question', 'emphasis', 'negative', 'relative', 'topics', 'wh_question', 'yn_question'];
@@ -43,19 +44,19 @@ function initNetwork() {
   setPreferences();
   initGraphs();
 
-  /* Input layer of size 1x1x20, 20 input points (12-distances + 8 angles)*/
+  /* Input layer of size 1x1x20, 38 input points (30-distances + 8 angles)*/
   layer_defs.push({
     type: 'input',
     out_sx: 1,
     out_sy: 1,
-    out_depth: 20
+    out_depth: 38
   });
 
   /* Fully connected layers */
   for (let i = 0; i < number_of_hidden_layers; i++) {
     layer_defs.push({
       type: 'fc',
-      num_neurons: 20,
+      num_neurons: number_of_neurons,
       activation: activation_function
     });
   }
@@ -67,7 +68,7 @@ function initNetwork() {
   });
 
   net.makeLayers(layer_defs);
-  setPreferences();
+  //setPreferences();
   initTrainer();
   //Start with a trained network
   //trainNetwork();
@@ -86,6 +87,8 @@ function setPreferences() {
   batch_size = $('#batch-size').val();
   training_method = $('#training-method').val();
   momentum = $('#momentum').val();
+  number_of_neurons = $('#hidden-layers-neurons').val();
+
 }
 
 function initGraphs() {
@@ -258,19 +261,52 @@ function load_and_step() {
     console.log(scores.w);
   }*/
 
-  if (step_num % 300 === 0) {
+  if (step_num % 1000 === 0) {
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
       }
-      if (lossWindows[i].get_average() != -1) {
+      if (trainAccWindows[i].get_average() != -1) {
         trainacc.push(trainAccWindows[i].get_average());
       }
-      if (lossWindows[i].get_average() != -1) {
+      if (testAccWindows[i].get_average() != -1) {
         testacc.push(testAccWindows[i].get_average());
       }
 
     }
+
+    $('.lossgraph p#neutra').html(lossWindows[0].get_average());
+    $('.lossgraph p#affirmative').html(lossWindows[1].get_average());
+    $('.lossgraph p#conditional').html(lossWindows[2].get_average());
+    $('.lossgraph p#doubt_question').html(lossWindows[3].get_average());
+    $('.lossgraph p#emphasis').html(lossWindows[4].get_average());
+    $('.lossgraph p#negative').html(lossWindows[5].get_average());
+    $('.lossgraph p#relative').html(lossWindows[6].get_average());
+    $('.lossgraph p#topics').html(lossWindows[7].get_average());
+    $('.lossgraph p#wh_question').html(lossWindows[8].get_average());
+    $('.lossgraph p#yn_question').html(lossWindows[9].get_average());
+
+    $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
+    $('.trainaccgraph p#affirmative').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#conditional').html(trainAccWindows[2].get_average());
+    $('.trainaccgraph p#doubt_question').html(trainAccWindows[3].get_average());
+    $('.trainaccgraph p#emphasis').html(trainAccWindows[4].get_average());
+    $('.trainaccgraph p#negative').html(trainAccWindows[5].get_average());
+    $('.trainaccgraph p#relative').html(trainAccWindows[6].get_average());
+    $('.trainaccgraph p#topics').html(trainAccWindows[7].get_average());
+    $('.trainaccgraph p#wh_question').html(trainAccWindows[8].get_average());
+    $('.trainaccgraph p#yn_question').html(trainAccWindows[9].get_average());
+
+    $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
+    $('.testaccgraph p#affirmative').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#conditional').html(testAccWindows[2].get_average());
+    $('.testaccgraph p#doubt_question').html(testAccWindows[3].get_average());
+    $('.testaccgraph p#emphasis').html(testAccWindows[4].get_average());
+    $('.testaccgraph p#negative').html(testAccWindows[5].get_average());
+    $('.testaccgraph p#relative').html(testAccWindows[6].get_average());
+    $('.testaccgraph p#topics').html(testAccWindows[7].get_average());
+    $('.testaccgraph p#wh_question').html(testAccWindows[8].get_average());
+    $('.testaccgraph p#yn_question').html(testAccWindows[9].get_average());
 
     lossGraph.add(step_num, losses);
     lossGraph.drawSelf(document.getElementById("lossgraph"));

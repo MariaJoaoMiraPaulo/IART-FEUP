@@ -85,7 +85,7 @@
           <input id="hidden-layers" value="1"/>
           <br>
           <label>Number of hidden layers neurons: </label>
-          <input id="hidden-layers-neurons" value="20"/>
+          <input id="hidden-layers-neurons" value="32"/>
           <br>
           <label>Activation function for hidden layers: </label>
           <select id="activation-function">
@@ -125,43 +125,63 @@
 
 
       <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-9">
             <big>Loss vs. Number of examples seen</big>
             <canvas id="lossgraph" width="800" height="400"></canvas>
           </div>
-          <!--<div class="col-md-5">
-              <h3>Project One</h3>
-              <h4>Subheading</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium veniam exercitationem expedita laborum at voluptate. Labore, voluptates totam at aut nemo deserunt rem magni pariatur quos perspiciatis atque eveniet unde.</p>
-              <a class="btn btn-primary" href="#">View Project <span class="glyphicon glyphicon-chevron-right"></span></a>
-          </div>-->
+          <div class="col-md-3 lossgraph">
+                <h5><strong>neutra </strong></h5><p id="neutra"></p>
+                <h5><strong>affirmative </strong></h5><p id="affirmative"></p>
+                <h5><strong>conditional </strong></h5><p id="conditional"></p>
+                <h5><strong>doubt_question </strong></h5><p id="doubt_question"></p>
+                <h5><strong>emphasis </strong></h5><p id="emphasis"></p>
+                <h5><strong>negative </strong></h5><p id="negative"></p>
+                <h5><strong>relative </strong></h5><p id="relative"></p>
+                <h5><strong>topics </strong></h5><p id="topics"></p>
+                <h5><strong>wh_question </strong></h5><p id="wh_question"></p>
+                <h5><strong>yn_question </strong></h5><p id="yn_question"></p>
+          </div>
       </div>
       <hr>
 
       <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-9">
             <big>Training Accuracy vs. Number of examples seen</big>
             <canvas id="trainaccgraph" width="800" height="400"></canvas>
           </div>
-      <!--    <div class="col-md-5">
-              <h3>Project Two</h3>
-              <h4>Subheading</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, odit velit cumque vero doloremque repellendus distinctio maiores rem expedita a nam vitae modi quidem similique ducimus! Velit, esse totam tempore.</p>
-              <a class="btn btn-primary" href="#">View Project <span class="glyphicon glyphicon-chevron-right"></span></a>
-          </div>-->
+          <div class="col-md-3 trainaccgraph">
+                <h5><strong>neutra </strong></h5><p id="neutra"></p>
+                <h5><strong>affirmative </strong></h5><p id="affirmative"></p>
+                <h5><strong>conditional </strong></h5><p id="conditional"></p>
+                <h5><strong>doubt_question </strong></h5><p id="doubt_question"></p>
+                <h5><strong>emphasis </strong></h5><p id="emphasis"></p>
+                <h5><strong>negative </strong></h5><p id="negative"></p>
+                <h5><strong>relative </strong></h5><p id="relative"></p>
+                <h5><strong>topics </strong></h5><p id="topics"></p>
+                <h5><strong>wh_question </strong></h5><p id="wh_question"></p>
+                <h5><strong>yn_question </strong></h5><p id="yn_question"></p>
+          </div>
+
       </div><hr>
 
       <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-9">
             <big>Testing Accuracy vs. Number of examples seen</big>
             <canvas id="testaccgraph" width="800" height="400"></canvas>
           </div>
-        <!--  <div class="col-md-5">
-              <h3>Project Three</h3>
-              <h4>Subheading</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, temporibus, dolores, at, praesentium ut unde repudiandae voluptatum sit ab debitis suscipit fugiat natus velit excepturi amet commodi deleniti alias possimus!</p>
-              <a class="btn btn-primary" href="#">View Project <span class="glyphicon glyphicon-chevron-right"></span></a>
-          </div>-->
+          <div class="col-md-3 testaccgraph">
+                <h5><strong>neutra </strong></h5><p id="neutra"></p>
+                <h5><strong>affirmative </strong></h5><p id="affirmative"></p>
+                <h5><strong>conditional </strong></h5><p id="conditional"></p>
+                <h5><strong>doubt_question </strong></h5><p id="doubt_question"></p>
+                <h5><strong>emphasis </strong></h5><p id="emphasis"></p>
+                <h5><strong>negative </strong></h5><p id="negative"></p>
+                <h5><strong>relative </strong></h5><p id="relative"></p>
+                <h5><strong>topics </strong></h5><p id="topics"></p>
+                <h5><strong>wh_question </strong></h5><p id="wh_question"></p>
+                <h5><strong>yn_question </strong></h5><p id="yn_question"></p>
+          </div>
+
       </div>
   </div>
 
