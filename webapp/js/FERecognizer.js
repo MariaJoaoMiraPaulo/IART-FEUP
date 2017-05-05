@@ -269,35 +269,35 @@ function load_and_step() {
     }
 
     $('.lossgraph p#neutra').html(lossWindows[0].get_average());
-    $('.lossgraph p#affirmative').html(lossWindows[1].get_average());
+    $('.lossgraph p#affirmative').html(lossWindows[7].get_average());
     $('.lossgraph p#conditional').html(lossWindows[2].get_average());
-    $('.lossgraph p#doubt_question').html(lossWindows[3].get_average());
-    $('.lossgraph p#emphasis').html(lossWindows[4].get_average());
-    $('.lossgraph p#negative').html(lossWindows[5].get_average());
-    $('.lossgraph p#relative').html(lossWindows[6].get_average());
-    $('.lossgraph p#topics').html(lossWindows[7].get_average());
+    $('.lossgraph p#doubt_question').html(lossWindows[6].get_average());
+    $('.lossgraph p#emphasis').html(lossWindows[3].get_average());
+    $('.lossgraph p#negative').html(lossWindows[1].get_average());
+    $('.lossgraph p#relative').html(lossWindows[9].get_average());
+    $('.lossgraph p#topics').html(lossWindows[4].get_average());
     $('.lossgraph p#wh_question').html(lossWindows[8].get_average());
-    $('.lossgraph p#yn_question').html(lossWindows[9].get_average());
+    $('.lossgraph p#yn_question').html(lossWindows[5].get_average());
 
     $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
-    $('.trainaccgraph p#affirmative').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#affirmative').html(trainAccWindows[7].get_average());
     $('.trainaccgraph p#conditional').html(trainAccWindows[2].get_average());
-    $('.trainaccgraph p#doubt_question').html(trainAccWindows[3].get_average());
-    $('.trainaccgraph p#emphasis').html(trainAccWindows[4].get_average());
-    $('.trainaccgraph p#negative').html(trainAccWindows[5].get_average());
-    $('.trainaccgraph p#relative').html(trainAccWindows[6].get_average());
-    $('.trainaccgraph p#topics').html(trainAccWindows[7].get_average());
+    $('.trainaccgraph p#doubt_question').html(trainAccWindows[6].get_average());
+    $('.trainaccgraph p#emphasis').html(trainAccWindows[3].get_average());
+    $('.trainaccgraph p#negative').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#relative').html(trainAccWindows[9].get_average());
+    $('.trainaccgraph p#topics').html(trainAccWindows[4].get_average());
     $('.trainaccgraph p#wh_question').html(trainAccWindows[8].get_average());
-    $('.trainaccgraph p#yn_question').html(trainAccWindows[9].get_average());
+    $('.trainaccgraph p#yn_question').html(trainAccWindows[5].get_average());
 
     $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
-    $('.testaccgraph p#affirmative').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#affirmative').html(testAccWindows[7].get_average());
     $('.testaccgraph p#conditional').html(testAccWindows[2].get_average());
-    $('.testaccgraph p#doubt_question').html(testAccWindows[3].get_average());
-    $('.testaccgraph p#emphasis').html(testAccWindows[4].get_average());
-    $('.testaccgraph p#negative').html(testAccWindows[5].get_average());
-    $('.testaccgraph p#relative').html(testAccWindows[6].get_average());
-    $('.testaccgraph p#topics').html(testAccWindows[7].get_average());
+    $('.testaccgraph p#doubt_question').html(testAccWindows[6].get_average());
+    $('.testaccgraph p#emphasis').html(testAccWindows[3].get_average());
+    $('.testaccgraph p#negative').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#relative').html(testAccWindows[9].get_average());
+    $('.testaccgraph p#topics').html(testAccWindows[4].get_average());
     $('.testaccgraph p#wh_question').html(testAccWindows[8].get_average());
     $('.testaccgraph p#yn_question').html(testAccWindows[9].get_average());
 
