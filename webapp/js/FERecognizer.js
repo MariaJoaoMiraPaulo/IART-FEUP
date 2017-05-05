@@ -127,22 +127,14 @@ function original_data() {
   train_files = ['train/a_affirmative.json', 'train/a_conditional.json',
     'train/a_doubt_question.json', 'train/a_emphasis.json',
     'train/a_negative.json', 'train/a_relative.json', 'train/a_topics.json',
-    'train/a_wh_question.json', 'train/a_yn_question.json',
-    'train/b_affirmative.json', 'train/b_conditional.json',
-    'train/b_doubt_question.json', 'train/b_emphasis.json', 'train/b_negative.json',
-    'train/b_relative.json', 'train/b_topics.json',
-    'train/b_wh_question.json', 'train/b_yn_question.json'
+    'train/a_wh_question.json', 'train/a_yn_question.json'
   ];
 
 
   test_files = ['test/a_affirmative.json', 'test/a_conditional.json',
     'test/a_doubt_question.json', 'test/a_emphasis.json',
     'test/a_negative.json', 'test/a_relative.json', 'test/a_topics.json',
-    'test/a_wh_question.json', 'test/a_yn_question.json',
-    'test/b_affirmative.json', 'test/b_conditional.json',
-    'test/b_doubt_question.json', 'test/b_emphasis.json', 'test/b_negative.json',
-    'test/b_relative.json', 'test/b_topics.json',
-    'test/b_wh_question.json', 'test/b_yn_question.json'
+    'test/a_wh_question.json', 'test/a_yn_question.json'
   ];
 
 
