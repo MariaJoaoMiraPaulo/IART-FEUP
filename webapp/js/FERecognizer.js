@@ -299,7 +299,7 @@ function load_and_step() {
     $('.testaccgraph p#relative').html(testAccWindows[9].get_average());
     $('.testaccgraph p#topics').html(testAccWindows[4].get_average());
     $('.testaccgraph p#wh_question').html(testAccWindows[8].get_average());
-    $('.testaccgraph p#yn_question').html(testAccWindows[9].get_average());
+    $('.testaccgraph p#yn_question').html(testAccWindows[5].get_average());
 
     lossGraph.add(step_num, losses);
     lossGraph.drawSelf(document.getElementById("lossgraph"));
