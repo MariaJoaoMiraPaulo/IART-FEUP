@@ -44,7 +44,7 @@ function initNetwork() {
   setPreferences();
   initGraphs();
 
-  /* Input layer of size 1x1x20, 38 input points (30-distances + 8 angles)*/
+  /* Input layer of size 1x1x38, 38 input points (30-distances + 8 angles)*/
   layer_defs.push({
     type: 'input',
     out_sx: 1,
@@ -237,7 +237,7 @@ function load_and_step() {
     trainIteraction = 0;
 
 
-  netx = new convnetjs.Vol(1, 1, 20);
+  netx = new convnetjs.Vol(1, 1, 38);
 
   netx.w = train_data[trainIteraction];
   var stats = trainer.train(netx, train_labels[trainIteraction]);
@@ -248,7 +248,7 @@ function load_and_step() {
 
   lossWindows[train_labels[trainIteraction]].add(avloss);
 
-  var x = new convnetjs.Vol(1, 1, 20);
+  var x = new convnetjs.Vol(1, 1, 38);
   x.w = test_data[testIteraction];
   var scores = net.forward(x); // pass forward through network
   var yhat_test = net.getPrediction();
@@ -360,7 +360,7 @@ function stopNetwork() {
 }
 
 function trainNetwork() {
-  netx = new convnetjs.Vol(1, 1, 20);
+  netx = new convnetjs.Vol(1, 1, 38);
 
   for (var x = 0; x < 100; x++) {
     for (var i = 0; i < test_data.length; i++) {
