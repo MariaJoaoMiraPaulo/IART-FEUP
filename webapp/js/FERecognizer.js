@@ -237,7 +237,7 @@ function load_and_step() {
   avloss = stats.loss;
 
   var yhat = net.getPrediction();
-  trainAccWindows[train_labels[testIteraction]].add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
+  trainAccWindows[train_labels[trainIteraction]].add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
   lossWindows[train_labels[trainIteraction]].add(avloss);
 
