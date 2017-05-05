@@ -28,8 +28,8 @@ var activation_function;
 var number_of_neurons;
 var netx;
 var avloss = 0;
-var legend = ['neutra', 'affirmative', 'conditional', 'doubt_question', 'emphasis', 'negative', 'relative', 'topics', 'wh_question', 'yn_question'];
-// paper values              .76             .65             .84             .88         .44         .59       .80         .77           .73
+var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
+// paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
 var stats;
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope 
 
@@ -169,6 +169,7 @@ function load_JSON(file, callback) {
 function prepare_train_data(response) {
   jsonResponse = JSON.parse(response);
 
+console.log(jsonResponse.length);
 
   var label;
 
