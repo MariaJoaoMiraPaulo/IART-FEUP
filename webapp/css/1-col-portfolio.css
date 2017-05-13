@@ -29,3 +29,8 @@ body{
 .btn.btn-default{
   background-color: #F2F1EF;
 }
+
+#data-loaded{
+  margin-left: 2em;
+  font-size: 1.5em;
+}

@@ -146,6 +146,7 @@ function original_data() {
 
   setTimeout(function () {
     console.log("Loaded data");
+    $('#buttons').append('<strong id="data-loaded">Data Loaded</strong>');
   }, 5000);
 }
 
@@ -326,43 +327,14 @@ function saveNetwork() {
   document.getElementById("network_data").innerHTML = netwok_data;
 }
 
-function loadNetwork() {
-
-  var network_data = document.getElementById("network_data").value;
-  var json = JSON.parse(network_data);
-  console.log("Loading network ... ");
-  shuffleData();
-  /* create an empty network */
-  net = new convnetjs.Net();
-  net.fromJSON(json);
-  /* load all parameters from JSON */
-  initGraphs();
-
-  trainer = new convnetjs.Trainer(net, {
-    method: 'adadelta',
-    l2_decay: 0.01,
-    batch_size: 10
-  });
-
-  intervalId = setInterval(load_and_step, 0);
-}
-
 function stopNetwork() {
   console.log("Stoping Network...");
   clearInterval(intervalId);
 }
 
-function trainNetwork() {
-  netx = new convnetjs.Vol(1, 1, 38);
-
-  for (var x = 0; x < 100; x++) {
-    for (var i = 0; i < test_data.length; i++) {
-      netx.w = train_data[trainIteraction];
-      stats = trainer.train(netx, train_labels[trainIteraction]);
-      avloss = stats.loss;
-      console.log(avloss);
-    }
-  }
+function restartNetwork(){
+  console.log("Restarting Network...");
+  intervalId = setInterval(load_and_step, 0);
 }
 
 function shuffleData() {
