@@ -332,8 +332,8 @@ function stopNetwork() {
   clearInterval(intervalId);
 }
 
-function restartNetwork(){
-  console.log("Restarting Network...");
+function resumeNetwork(){
+  console.log("Resuming Network...");
   intervalId = setInterval(load_and_step, 0);
 }
 
