@@ -91,8 +91,6 @@ var activation_function_output;
 var number_of_hidden_layers;
 var activation_function;
 var number_of_neurons;
-var avloss = 0;
-
 
 var trainers = [];
 var nets = [];
@@ -686,29 +684,29 @@ function prepare_topics_test_data(response) {
 
 function load_and_step() {
 
-  negative_testIteraction ++;
-  negative_trainIteraction ++;
+  negative_testIteraction++;
+  negative_trainIteraction++;
 
-  conditional_testIteraction ++;
-  conditional_trainIteraction ++;
+  conditional_testIteraction++;
+  conditional_trainIteraction++;
 
-  emphasis_testIteraction ++;
-  emphasis_trainIteraction ++;
+  emphasis_testIteraction++;
+  emphasis_trainIteraction++;
 
-  yn_testIteraction ++;
-  yn_trainIteraction ++;
+  yn_testIteraction++;
+  yn_trainIteraction++;
 
-  doubt_testIteraction ++;
-  doubt_trainIteraction ++;
+  doubt_testIteraction++;
+  doubt_trainIteraction++;
 
-  aff_testIteraction ++;
-  aff_trainIteraction ++;
+  aff_testIteraction++;
+  aff_trainIteraction++;
 
-  wh_testIteraction ++;
-  wh_trainIteraction ++;
+  wh_testIteraction++;
+  wh_trainIteraction++;
 
-  relative_testIteraction ++;
-  relative_trainIteraction ++;
+  relative_testIteraction++;
+  relative_trainIteraction++;
 
   topics_testIteraction++;
   topics_trainIteraction++;
@@ -718,7 +716,6 @@ function load_and_step() {
   var losses = [];
   var trainacc = [];
   var testacc = [];
-
 
   if (negative_testIteraction >= negative_test_data.length)
   negative_testIteraction = 0;
@@ -853,9 +850,9 @@ function networkTrainingAndTesting(trainData, trainLabels, trainIteraction, test
   var netx = new convnetjs.Vol(1, 1, 38);
   netx.w = trainData[trainIteraction];
 
-  console.log(trainers);
   var stats = trainers[expressionNumber-1].train(netx, trainLabels[trainIteraction]);
-  avloss = stats.loss;
+  var avloss = stats.loss;
+  console.log(avloss);
 
   var yhat = nets[expressionNumber-1].getPrediction();
   trainAccWindows[expressionNumber].add(yhat == trainLabels[trainIteraction] ? 1.0 : 0.0);
