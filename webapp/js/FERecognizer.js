@@ -49,7 +49,7 @@ function initNetwork() {
     type: 'input',
     out_sx: 1,
     out_sy: 1,
-    out_depth: 38
+    out_depth: 48
   });
 
   /* Fully connected layers */
@@ -231,7 +231,7 @@ function load_and_step() {
     trainIteraction = 0;
 
 
-  netx = new convnetjs.Vol(1, 1, 38);
+  netx = new convnetjs.Vol(1, 1, 48);
 
   netx.w = train_data[trainIteraction];
   var stats = trainer.train(netx, train_labels[trainIteraction]);
@@ -242,7 +242,7 @@ function load_and_step() {
 
   lossWindows[train_labels[trainIteraction]].add(avloss);
 
-  var x = new convnetjs.Vol(1, 1, 38);
+  var x = new convnetjs.Vol(1, 1, 48);
   x.w = test_data[testIteraction];
   var scores = net.forward(x); // pass forward through network
   var yhat_test = net.getPrediction();
