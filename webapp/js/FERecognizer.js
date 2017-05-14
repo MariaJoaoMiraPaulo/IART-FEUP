@@ -28,6 +28,17 @@ var activation_function;
 var number_of_neurons;
 var netx;
 var avloss = 0;
+var neutra = 0;
+var negative = 0;
+var conditional = 0;
+var emphasis = 0;
+var topics = 0;
+var yn_question = 0;
+var doubt_question = 0;
+var affirmative = 0;
+var wh_question = 0;
+var relative = 0;
+
 var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 // paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
 var stats;
@@ -68,10 +79,7 @@ function initNetwork() {
   });
 
   net.makeLayers(layer_defs);
-  //setPreferences();
   initTrainer();
-  //Start with a trained network
-  //trainNetwork();
   intervalId = setInterval(load_and_step, 0);
 }
 
@@ -145,7 +153,17 @@ function original_data() {
     load_JSON(file, prepare_test_data);
 
   setTimeout(function () {
-    console.log("Loaded data");
+    console.log("Data set info:");
+    console.log("neutra:" + neutra);
+    console.log("negative: " + negative);
+    console.log("conditional: " + emphasis);
+    console.log("emphasis: " + emphasis);
+    console.log("topics: " + topics);
+    console.log("yn_question: " + yn_question);
+    console.log("doubt_question: " + doubt_question);
+    console.log("affirmative: " + affirmative);
+    console.log("wh_question: " + wh_question);
+    console.log("relative: " + relative);
     $('#buttons').append('<strong id="data-loaded">Data Loaded</strong>');
   }, 5000);
 }
@@ -170,16 +188,47 @@ function load_JSON(file, callback) {
 function prepare_train_data(response) {
   jsonResponse = JSON.parse(response);
 
-console.log(jsonResponse.length);
+  //['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 
   var label;
 
   for (line of jsonResponse) {
     var lineData = [];
     for (element in line) {
-
       if (element == 'target') {
         label = line[element];
+        switch (line[element]) {
+          case 0:
+            neutra++;
+            break;
+          case 1:
+            negative++;
+            break;
+          case 2:
+            conditional++;
+            break;
+          case 3:
+            emphasis++;
+            break;
+          case 4:
+            topics++;
+            break;
+          case 5:
+            yn_question++;
+            break;
+          case 6:
+            doubt_question++;
+            break;
+          case 7:
+            affirmative++;
+            break;
+          case 8:
+            wh_question++;
+            break;
+          case 9:
+            relative++;
+            break;
+        }
       } else if (element != 'index') {
         lineData.push(line[element]);
       }
@@ -247,13 +296,6 @@ function load_and_step() {
   var scores = net.forward(x); // pass forward through network
   var yhat_test = net.getPrediction();
   testAccWindows[test_labels[testIteraction]].add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
-  /*if (yhat_test === test_labels[testIteraction]) {
-    console.log("Correct: Result  " + yhat_test + " Expected " + test_labels[testIteraction]);
-    console.log(scores.w);
-  } else {
-    console.log("False: Result " + yhat_test + " Expected " + test_labels[testIteraction]);
-    console.log(scores.w);
-  }*/
 
   if (step_num % 1000 === 0) {
     for (var i = 0; i < legend.length; i++) {
@@ -332,7 +374,7 @@ function stopNetwork() {
   clearInterval(intervalId);
 }
 
-function resumeNetwork(){
+function resumeNetwork() {
   console.log("Resuming Network...");
   intervalId = setInterval(load_and_step, 0);
 }
