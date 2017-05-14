@@ -77,6 +77,7 @@ var topics_trainIteraction = 1;
 var step_num = 0;
 //var trainer;
 
+/*
 //TRAINERS
 var negative_trainer;
 var conditional_trainer;
@@ -86,7 +87,7 @@ var doubt_question_trainer;
 var aff_trainer;
 var wh_question_trainer;
 var relative_trainer;
-var topics_trainer;
+var topics_trainer;*/
 
 
 var intervalId;
@@ -104,14 +105,15 @@ var activation_function_output;
 var number_of_hidden_layers;
 var activation_function;
 var number_of_neurons;
-var netx;
 var avloss = 0;
 
+
+var trainers = [];
+var nets = [];
 var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 // paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
-var stats;
 
-
+/*
 //NETWORKS
 var negative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 var conditional_net = new convnetjs.Net(); // declared outside -> global variable in window scope
@@ -121,7 +123,9 @@ var doubt_question_net = new convnetjs.Net(); // declared outside -> global vari
 var aff_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 var wh_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 var relative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var topics_net = new convnetjs.Net();
+var topics_net = new convnetjs.Net();*/
+
+
 
 $(document).ready(function () {
   original_data();
@@ -133,6 +137,7 @@ function initNetwork() {
   var layer_defs = [];
   setPreferences();
   initGraphs();
+  initNetworks();
 
   /* Input layer of size 1x1x38, 38 input points (30-distances + 8 angles)*/
   layer_defs.push({
@@ -158,6 +163,13 @@ function initNetwork() {
   });
 
   //net.makeLayers(layer_defs);
+
+  /* Fully connected layers */
+  for (let i = 0; i < nets.length; i++) {
+    nets[i].makeLayers(layer_defs);
+  }
+
+/*
   negative_net.makeLayers(layer_defs);
   conditional_net.makeLayers(layer_defs);
   emphasis_net.makeLayers(layer_defs);
@@ -166,10 +178,18 @@ function initNetwork() {
   aff_net.makeLayers(layer_defs);
   wh_question_net.makeLayers(layer_defs);
   relative_net.makeLayers(layer_defs);
-  topics_net.makeLayers(layer_defs);
+  topics_net.makeLayers(layer_defs);*/
 
   initTrainer();
   intervalId = setInterval(load_and_step, 0);
+}
+
+
+function initNetworks(){
+
+  for (var i = 0; i < legend.length-1; i++) {
+    nets.push(new convnetjs.Net());
+  }
 }
 
 function setPreferences() {
@@ -201,142 +221,28 @@ function initGraphs() {
 }
 
 function initTrainer() {
-  if (training_method == 'sgd') {
-    negative_trainer = new convnetjs.Trainer(negative_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
 
-    conditional_trainer = new convnetjs.Trainer(conditional_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    emphasis_trainer = new convnetjs.Trainer(emphasis_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    yn_question_trainer = new convnetjs.Trainer(yn_question_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    doubt_question_trainer = new convnetjs.Trainer(doubt_question_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    aff_trainer = new convnetjs.Trainer(aff_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    wh_question_trainer = new convnetjs.Trainer(wh_question_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    relative_trainer = new convnetjs.Trainer(relative_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-
-    topics_trainer = new convnetjs.Trainer(topics_net, {
-      method: 'sgd',
-      learning_rate: learning_rate,
-      l2_decay: l2_decay,
-      momentum: momentum,
-      batch_size: batch_size,
-      l1_decay: l1_decay
-    });
-  } else {
-    negative_trainer = new convnetjs.Trainer(negative_net, {
+  for (var i = 0; i < legend.length-1; i++)
+  {
+    if (training_method == 'sgd') {
+      trainers.push( new convnetjs.Trainer(nets[i], {
+        method: 'sgd',
+        learning_rate: learning_rate,
+        l2_decay: l2_decay,
+        momentum: momentum,
+        batch_size: batch_size,
+        l1_decay: l1_decay
+      }));
+    }
+   else {
+    trainers.push( new convnetjs.Trainer(nets[i], {
       method: training_method,
       l2_decay: l2_decay,
       batch_size: batch_size
-    });
-
-    conditional_trainer = new convnetjs.Trainer(conditional_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    emphasis_trainer = new convnetjs.Trainer(emphasis_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    yn_question_trainer = new convnetjs.Trainer(yn_question_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    doubt_question_trainer = new convnetjs.Trainer(doubt_question_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    aff_trainer = new convnetjs.Trainer(aff_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    wh_question_trainer = new convnetjs.Trainer(wh_question_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    relative_trainer = new convnetjs.Trainer(relative_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
-
-    topics_trainer = new convnetjs.Trainer(topics_net, {
-      method: training_method,
-      l2_decay: l2_decay,
-      batch_size: batch_size
-    });
+    }));
   }
+}
+
 }
 
 function original_data() {
@@ -909,18 +815,22 @@ function load_and_step() {
   topics_trainIteraction = 0;
 
 
-  networkTrainingAndTesting(negative_trainer, negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_testIteraction, negative_net);
-  networkTrainingAndTesting(conditional_trainer, conditional_train_data, conditional_train_labels, conditional_trainIteraction, conditional_test_data, conditional_test_labels, conditional_testIteraction, conditional_net);
-  networkTrainingAndTesting(emphasis_trainer, emphasis_train_data, emphasis_train_labels, emphasis_trainIteraction, emphasis_test_data, emphasis_test_labels, emphasis_testIteraction, emphasis_net);
-  networkTrainingAndTesting(yn_question_trainer, yn_train_data, yn_train_labels, yn_trainIteraction, yn_test_data, yn_test_labels, yn_testIteraction, yn_question_net);
+//var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 
-  networkTrainingAndTesting(doubt_question_trainer, doubt_train_data, doubt_train_labels, doubt_trainIteraction, doubt_test_data, doubt_test_labels, doubt_testIteraction, doubt_question_net);
-  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
-  networkTrainingAndTesting(wh_question_trainer, wh_train_data, wh_train_labels, wh_trainIteraction, wh_test_data, wh_test_labels, wh_testIteraction, wh_question_net);
-  networkTrainingAndTesting(relative_trainer, relative_train_data, relative_train_labels, relative_trainIteraction, relative_test_data, relative_test_labels, relative_testIteraction, relative_net);
-  networkTrainingAndTesting(topics_trainer, topics_train_data, topics_train_labels, topics_trainIteraction, topics_test_data, topics_test_labels, topics_testIteraction, topics_net);
 
-  if (step_num % 1000 === 0) {
+
+  networkTrainingAndTesting( negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_testIteraction, 1);
+  networkTrainingAndTesting( conditional_train_data, conditional_train_labels, conditional_trainIteraction, conditional_test_data, conditional_test_labels, conditional_testIteraction,2);
+  networkTrainingAndTesting( emphasis_train_data, emphasis_train_labels, emphasis_trainIteraction, emphasis_test_data, emphasis_test_labels, emphasis_testIteraction,3);
+  networkTrainingAndTesting( topics_train_data, topics_train_labels, topics_trainIteraction, topics_test_data, topics_test_labels, topics_testIteraction,4);
+  networkTrainingAndTesting( yn_train_data, yn_train_labels, yn_trainIteraction, yn_test_data, yn_test_labels, yn_testIteraction,5);
+  networkTrainingAndTesting( doubt_train_data, doubt_train_labels, doubt_trainIteraction, doubt_test_data, doubt_test_labels, doubt_testIteraction,6);
+  networkTrainingAndTesting( aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction,7);
+  networkTrainingAndTesting( wh_train_data, wh_train_labels, wh_trainIteraction, wh_test_data, wh_test_labels, wh_testIteraction,8);
+  networkTrainingAndTesting( relative_train_data, relative_train_labels, relative_trainIteraction, relative_test_data, relative_test_labels, relative_testIteraction,9);
+
+
+  if (step_num % 300 === 0) {
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
@@ -933,7 +843,7 @@ function load_and_step() {
       }
     }
 
-    $('.lossgraph p#neutra').html(lossWindows[0].get_average());
+    //$('.lossgraph p#neutra').html(lossWindows[0].get_average());
     $('.lossgraph p#affirmative').html(lossWindows[7].get_average());
     $('.lossgraph p#conditional').html(lossWindows[2].get_average());
     $('.lossgraph p#doubt_question').html(lossWindows[6].get_average());
@@ -944,7 +854,7 @@ function load_and_step() {
     $('.lossgraph p#wh_question').html(lossWindows[8].get_average());
     $('.lossgraph p#yn_question').html(lossWindows[5].get_average());
 
-    $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
+  //  $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
     $('.trainaccgraph p#affirmative').html(trainAccWindows[7].get_average());
     $('.trainaccgraph p#conditional').html(trainAccWindows[2].get_average());
     $('.trainaccgraph p#doubt_question').html(trainAccWindows[6].get_average());
@@ -955,7 +865,7 @@ function load_and_step() {
     $('.trainaccgraph p#wh_question').html(trainAccWindows[8].get_average());
     $('.trainaccgraph p#yn_question').html(trainAccWindows[5].get_average());
 
-    $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
+  //  $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
     $('.testaccgraph p#affirmative').html(testAccWindows[7].get_average());
     $('.testaccgraph p#conditional').html(testAccWindows[2].get_average());
     $('.testaccgraph p#doubt_question').html(testAccWindows[6].get_average());
@@ -977,26 +887,27 @@ function load_and_step() {
   }
 }
 
-function networkTrainingAndTesting(trainer, trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, net){
+function networkTrainingAndTesting(trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, expressionNumber){
   //  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
 
-  netx = new convnetjs.Vol(1, 1, 38);
+  var netx = new convnetjs.Vol(1, 1, 38);
   netx.w = trainData[trainIteraction];
 
-  var stats = trainer.train(netx, trainLabels[trainIteraction]);
+  console.log(trainers);
+  var stats = trainers[expressionNumber-1].train(netx, trainLabels[trainIteraction]);
   avloss = stats.loss;
 
-  var yhat = net.getPrediction();
-  trainAccWindows[trainLabels[trainIteraction]].add(yhat === trainLabels[trainIteraction] ? 1.0 : 0.0);
+  var yhat = nets[expressionNumber-1].getPrediction();
+  trainAccWindows[expressionNumber].add(yhat == trainLabels[trainIteraction] ? 1.0 : 0.0);
 
-  lossWindows[trainLabels[trainIteraction]].add(avloss);
+  lossWindows[expressionNumber].add(avloss);
 
   var x = new convnetjs.Vol(1, 1, 38);
   x.w = testData[testIteraction];
 
-  var scores = net.forward(x); // pass forward through network
-  var yhat_test = net.getPrediction();
-  testAccWindows[testLabels[testIteraction]].add(yhat_test === testLabels[testIteraction] ? 1.0 : 0.0);
+  var scores = nets[expressionNumber-1].forward(x); // pass forward through network
+  var yhat_test = nets[expressionNumber-1].getPrediction();
+  testAccWindows[expressionNumber].add(yhat_test == testLabels[testIteraction] ? 1.0 : 0.0);
 }
 
 function saveNetwork() {

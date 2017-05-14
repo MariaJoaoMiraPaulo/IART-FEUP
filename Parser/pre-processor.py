@@ -205,10 +205,7 @@ for fileName in os.listdir("/Users/mariajoaomirapaulo/Desktop/Joao/Feup_3Ano/IAR
         lines = file.readlines()
         file.close()
         for line in lines:
-            if line[0] == "0":
-                targets[j].append(0)
-            else:
-                targets[j].append(i + 1)
+            targets[j].append(line[0])
         i = i + 1
         j = j + 1
         if i == 9:
