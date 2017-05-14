@@ -75,20 +75,6 @@ var topics_trainIteraction = 1;
 
 
 var step_num = 0;
-//var trainer;
-
-/*
-//TRAINERS
-var negative_trainer;
-var conditional_trainer;
-var emphasis_trainer;
-var yn_question_trainer;
-var doubt_question_trainer;
-var aff_trainer;
-var wh_question_trainer;
-var relative_trainer;
-var topics_trainer;*/
-
 
 var intervalId;
 var learning_rate;
@@ -112,19 +98,6 @@ var trainers = [];
 var nets = [];
 var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 // paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
-
-/*
-//NETWORKS
-var negative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var conditional_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var emphasis_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var yn_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var doubt_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var aff_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var wh_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var relative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
-var topics_net = new convnetjs.Net();*/
-
 
 
 $(document).ready(function () {
@@ -162,23 +135,10 @@ function initNetwork() {
     num_classes: 2
   });
 
-  //net.makeLayers(layer_defs);
-
   /* Fully connected layers */
   for (let i = 0; i < nets.length; i++) {
     nets[i].makeLayers(layer_defs);
   }
-
-/*
-  negative_net.makeLayers(layer_defs);
-  conditional_net.makeLayers(layer_defs);
-  emphasis_net.makeLayers(layer_defs);
-  yn_question_net.makeLayers(layer_defs);
-  doubt_question_net.makeLayers(layer_defs);
-  aff_net.makeLayers(layer_defs);
-  wh_question_net.makeLayers(layer_defs);
-  relative_net.makeLayers(layer_defs);
-  topics_net.makeLayers(layer_defs);*/
 
   initTrainer();
   intervalId = setInterval(load_and_step, 0);
