@@ -8,6 +8,7 @@ var doubt_train_data = [];
 var aff_train_data = [];
 var wh_train_data = [];
 var relative_train_data = [];
+var topics_train_data = [];
 
 /* 1/4 of data in order to test network*/
 var negative_test_data = [];
@@ -18,6 +19,7 @@ var doubt_test_data = [];
 var aff_test_data = [];
 var wh_test_data = [];
 var relative_test_data = [];
+var topics_test_data = [];
 
 /* 1/4 of data results in order to train network*/
 var negative_train_labels = [];
@@ -28,6 +30,7 @@ var doubt_train_labels = [];
 var aff_train_labels = [];
 var wh_train_labels = [];
 var relative_train_labels = [];
+var topics_train_labels = [];
 
 /* 3/4 of data results in order to test network*/
 
@@ -39,6 +42,7 @@ var doubt_test_labels = [];
 var aff_test_labels = [];
 var wh_test_labels = [];
 var relative_test_labels = [];
+var topics_test_labels = [];
 
 
 var negative_testIteraction = 1;
@@ -65,6 +69,11 @@ var wh_trainIteraction = 1;
 var relative_testIteraction = 1;
 var relative_trainIteraction = 1;
 
+var topics_testIteraction = 1;
+var topics_trainIteraction = 1;
+
+
+
 var step_num = 0;
 //var trainer;
 
@@ -77,6 +86,7 @@ var doubt_question_trainer;
 var aff_trainer;
 var wh_question_trainer;
 var relative_trainer;
+var topics_trainer;
 
 
 var intervalId;
@@ -111,6 +121,7 @@ var doubt_question_net = new convnetjs.Net(); // declared outside -> global vari
 var aff_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 var wh_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 var relative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var topics_net = new convnetjs.Net();
 
 $(document).ready(function () {
   original_data();
@@ -143,7 +154,7 @@ function initNetwork() {
   /* Output layer */
   layer_defs.push({
     type: activation_function_output,
-    num_classes: 10
+    num_classes: 2
   });
 
   //net.makeLayers(layer_defs);
@@ -155,6 +166,7 @@ function initNetwork() {
   aff_net.makeLayers(layer_defs);
   wh_question_net.makeLayers(layer_defs);
   relative_net.makeLayers(layer_defs);
+  topics_net.makeLayers(layer_defs);
 
   initTrainer();
   intervalId = setInterval(load_and_step, 0);
@@ -261,6 +273,15 @@ function initTrainer() {
       batch_size: batch_size,
       l1_decay: l1_decay
     });
+
+    topics_trainer = new convnetjs.Trainer(topics_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
   } else {
     negative_trainer = new convnetjs.Trainer(negative_net, {
       method: training_method,
@@ -280,7 +301,7 @@ function initTrainer() {
       batch_size: batch_size
     });
 
-    yn_question_trainer = new convnetjs.Trainer(yn_question_trainer, {
+    yn_question_trainer = new convnetjs.Trainer(yn_question_net, {
       method: training_method,
       l2_decay: l2_decay,
       batch_size: batch_size
@@ -305,6 +326,12 @@ function initTrainer() {
     });
 
     relative_trainer = new convnetjs.Trainer(relative_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    topics_trainer = new convnetjs.Trainer(topics_net, {
       method: training_method,
       l2_decay: l2_decay,
       batch_size: batch_size
@@ -338,63 +365,73 @@ function original_data() {
   train_files_relative = ['train/a_relative.json'];
   test_files_relative = ['test/a_relative.json'];
 
+  train_files_topics = ['train/a_topics.json'];
+  test_files_topics = ['test/a_topics.json'];
 
-//NEGATIVE
+
+  //NEGATIVE
   for (file of train_files_negative)
-      load_JSON(file, prepare_negative_train_data);
+  load_JSON(file, prepare_negative_train_data);
 
   for (file of test_files_negative)
-      load_JSON(file, prepare_negative_test_data);
+  load_JSON(file, prepare_negative_test_data);
 
-//CONDITIONAL
+  //CONDITIONAL
   for (file of train_files_conditional)
-      load_JSON(file, prepare_conditional_train_data);
+  load_JSON(file, prepare_conditional_train_data);
 
   for (file of test_files_conditional)
-      load_JSON(file, prepare_conditional_test_data);
+  load_JSON(file, prepare_conditional_test_data);
 
-//EMPHASIS
+  //EMPHASIS
   for (file of train_files_emphasis)
-      load_JSON(file, prepare_emphasis_train_data);
+  load_JSON(file, prepare_emphasis_train_data);
 
   for (file of test_files_emphasis)
-      load_JSON(file, prepare_emphasis_test_data);
+  load_JSON(file, prepare_emphasis_test_data);
 
   //YN
   for (file of train_files_yn)
-      load_JSON(file, prepare_yn_train_data);
+  load_JSON(file, prepare_yn_train_data);
 
-  for (file of train_files_yn)
-      load_JSON(file, prepare_yn_test_data);
+  for (file of test_files_yn)
+  load_JSON(file, prepare_yn_test_data);
 
-//DOUBT
+  //DOUBT
   for (file of train_files_doubt)
-      load_JSON(file, prepare_doubt_train_data);
+  load_JSON(file, prepare_doubt_train_data);
 
   for (file of test_files_doubt)
-      load_JSON(file, prepare_doubt_test_data);
+  load_JSON(file, prepare_doubt_test_data);
 
-//AFFIRMATIVE
+  //AFFIRMATIVE
   for (file of train_files_aff)
-    load_JSON(file, prepare_aff_train_data);
+  load_JSON(file, prepare_aff_train_data);
 
   for (file of test_files_aff)
-    load_JSON(file, prepare_aff_test_data);
+  load_JSON(file, prepare_aff_test_data);
 
   //WH
   for (file of train_files_wh)
-    load_JSON(file, prepare_wh_train_data);
+  load_JSON(file, prepare_wh_train_data);
 
   for (file of train_files_wh)
-    load_JSON(file, prepare_wh_test_data);
+  load_JSON(file, prepare_wh_test_data);
 
 
-//RELATIVE
+  //RELATIVE
   for (file of train_files_relative)
-      load_JSON(file, prepare_relative_train_data);
+  load_JSON(file, prepare_relative_train_data);
 
   for (file of test_files_relative)
-      load_JSON(file, prepare_relative_test_data);
+  load_JSON(file, prepare_relative_test_data);
+
+  //TOPICS
+  for (file of train_files_topics)
+  load_JSON(file, prepare_topics_train_data);
+
+  for (file of test_files_topics)
+  load_JSON(file, prepare_topics_test_data);
 
 
   setTimeout(function () {
@@ -741,6 +778,46 @@ function prepare_relative_test_data(response) {
   }
 }
 
+function prepare_topics_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    topics_train_data.push(lineData);
+    topics_train_labels.push(label);
+  }
+}
+
+
+function prepare_topics_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    topics_test_data.push(lineData);
+    topics_test_labels.push(label);
+  }
+}
+
 function load_and_step() {
 
   negative_testIteraction ++;
@@ -767,6 +844,9 @@ function load_and_step() {
   relative_testIteraction ++;
   relative_trainIteraction ++;
 
+  topics_testIteraction++;
+  topics_trainIteraction++;
+
   step_num++;
 
   var losses = [];
@@ -775,63 +855,70 @@ function load_and_step() {
 
 
   if (negative_testIteraction >= negative_test_data.length)
-    negative_testIteraction = 0;
+  negative_testIteraction = 0;
 
   if (negative_trainIteraction >=  negative_train_data.length)
-    negative_trainIteraction = 0;
+  negative_trainIteraction = 0;
 
   if (conditional_testIteraction >= conditional_test_data.length)
-    conditional_testIteraction = 0;
+  conditional_testIteraction = 0;
 
   if (conditional_trainIteraction >=  conditional_train_data.length)
-    conditional_trainIteraction = 0;
+  conditional_trainIteraction = 0;
 
   if (emphasis_testIteraction >= emphasis_test_data.length)
-        emphasis_testIteraction = 0;
+  emphasis_testIteraction = 0;
 
   if (emphasis_trainIteraction >= emphasis_train_data.length)
-        emphasis_trainIteraction = 0;
+  emphasis_trainIteraction = 0;
 
   if (yn_testIteraction >= yn_test_data.length)
-       yn_testIteraction = 0;
+  yn_testIteraction = 0;
 
   if (yn_trainIteraction >= yn_train_data.length)
-      yn_trainIteraction = 0;
+  yn_trainIteraction = 0;
 
   if ( doubt_testIteraction >= doubt_test_data.length)
-     doubt_testIteraction = 0;
+  doubt_testIteraction = 0;
 
   if (doubt_trainIteraction >= doubt_train_data.length)
-      doubt_trainIteraction = 0;
+  doubt_trainIteraction = 0;
 
   if (aff_testIteraction >= aff_test_data.length)
-    aff_testIteraction = 0;
+  aff_testIteraction = 0;
 
   if (aff_trainIteraction >= aff_train_data.length)
-      aff_trainIteraction = 0;
+  aff_trainIteraction = 0;
 
   if (wh_testIteraction >= wh_test_data.length)
-           wh_testIteraction = 0;
+  wh_testIteraction = 0;
 
   if (wh_trainIteraction >= wh_train_data.length)
-          wh_trainIteraction = 0;
-
+  wh_trainIteraction = 0;
 
   if (relative_testIteraction >= relative_test_data.length)
-                relative_testIteraction = 0;
+  relative_testIteraction = 0;
 
   if (relative_trainIteraction >= relative_train_data.length)
-                relative_trainIteraction = 0;
+  relative_trainIteraction = 0;
+
+  if (topics_testIteraction >= topics_test_data.length)
+  topics_testIteraction = 0;
+
+  if (topics_trainIteraction >= topics_train_data.length)
+  topics_trainIteraction = 0;
 
 
-  networkTrainingAndTesting(negative_trainer, negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_trainIteraction, negative_net);
+  networkTrainingAndTesting(negative_trainer, negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_testIteraction, negative_net);
   networkTrainingAndTesting(conditional_trainer, conditional_train_data, conditional_train_labels, conditional_trainIteraction, conditional_test_data, conditional_test_labels, conditional_testIteraction, conditional_net);
-  networkTrainingAndTesting(emphasis_trainer, emphasis_train_data, emphasis_train_labels, emphasis_trainIteraction, emphasis_test_data, emphasis_train_data, emphasis_testIteraction, emphasis_net);
-  networkTrainingAndTesting(yn_question_trainer, n_train_data, yn_train_labels, yn_trainIteraction, yn_test_data, yn_test_labels, yn_testIteraction, yn_question_net);
-  networkTrainingAndTesting(doubt_question_trainer, oubt_train_data, doubt_test_data, doubt_trainIteraction, doubt_test_data, doubt_test_labels, doubt_testIteraction, doubt_question_net);
+  networkTrainingAndTesting(emphasis_trainer, emphasis_train_data, emphasis_train_labels, emphasis_trainIteraction, emphasis_test_data, emphasis_test_labels, emphasis_testIteraction, emphasis_net);
+  networkTrainingAndTesting(yn_question_trainer, yn_train_data, yn_train_labels, yn_trainIteraction, yn_test_data, yn_test_labels, yn_testIteraction, yn_question_net);
+
+  networkTrainingAndTesting(doubt_question_trainer, doubt_train_data, doubt_train_labels, doubt_trainIteraction, doubt_test_data, doubt_test_labels, doubt_testIteraction, doubt_question_net);
   networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
   networkTrainingAndTesting(wh_question_trainer, wh_train_data, wh_train_labels, wh_trainIteraction, wh_test_data, wh_test_labels, wh_testIteraction, wh_question_net);
-  networkTrainingAndTesting(relative_trainer, elative_train_labels, relative_train_labels, relative_trainIteraction, relative_test_data, relative_test_labels, relative_testIteraction, relative_net);
+  networkTrainingAndTesting(relative_trainer, relative_train_data, relative_train_labels, relative_trainIteraction, relative_test_data, relative_test_labels, relative_testIteraction, relative_net);
+  networkTrainingAndTesting(topics_trainer, topics_train_data, topics_train_labels, topics_trainIteraction, topics_test_data, topics_test_labels, topics_testIteraction, topics_net);
 
   if (step_num % 1000 === 0) {
     for (var i = 0; i < legend.length; i++) {
@@ -890,11 +977,10 @@ function load_and_step() {
   }
 }
 
-function networkTrainingAndTesting(trainer,trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, net){
-//  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
+function networkTrainingAndTesting(trainer, trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, net){
+  //  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
 
   netx = new convnetjs.Vol(1, 1, 38);
-
   netx.w = trainData[trainIteraction];
 
   var stats = trainer.train(netx, trainLabels[trainIteraction]);
@@ -907,7 +993,7 @@ function networkTrainingAndTesting(trainer,trainData, trainLabels, trainIteracti
 
   var x = new convnetjs.Vol(1, 1, 38);
   x.w = testData[testIteraction];
-  console.log(testIteraction);
+
   var scores = net.forward(x); // pass forward through network
   var yhat_test = net.getPrediction();
   testAccWindows[testLabels[testIteraction]].add(yhat_test === testLabels[testIteraction] ? 1.0 : 0.0);
