@@ -47,31 +47,22 @@ var topics_test_labels = [];
 
 var negative_testIteraction = 1;
 var negative_trainIteraction = 1;
-
 var conditional_testIteraction = 1;
 var conditional_trainIteraction = 1;
-
 var emphasis_testIteraction = 1;
 var emphasis_trainIteraction = 1;
-
 var yn_testIteraction = 1;
 var yn_trainIteraction = 1;
-
 var doubt_testIteraction = 1;
 var doubt_trainIteraction = 1;
-
 var aff_testIteraction = 1;
 var aff_trainIteraction = 1;
-
 var wh_testIteraction = 1;
 var wh_trainIteraction = 1;
-
 var relative_testIteraction = 1;
 var relative_trainIteraction = 1;
-
 var topics_testIteraction = 1;
 var topics_trainIteraction = 1;
-
 
 
 var step_num = 0;
@@ -151,7 +142,6 @@ function initNetworks(){
 }
 
 function setPreferences() {
-
   activation_function_output = $('#activation-function-for-output-layer').val();
   number_of_hidden_layers = $('#hidden-layers').val();
   activation_function = $('#activation-function').val();
@@ -162,7 +152,6 @@ function setPreferences() {
   training_method = $('#training-method').val();
   momentum = $('#momentum').val();
   number_of_neurons = $('#hidden-layers-neurons').val();
-
 }
 
 function initGraphs() {
@@ -235,73 +224,72 @@ function original_data() {
 
   //NEGATIVE
   for (file of train_files_negative)
-  load_JSON(file, prepare_negative_train_data);
+    load_JSON(file, prepare_negative_train_data);
 
   for (file of test_files_negative)
-  load_JSON(file, prepare_negative_test_data);
+    load_JSON(file, prepare_negative_test_data);
 
   //CONDITIONAL
   for (file of train_files_conditional)
-  load_JSON(file, prepare_conditional_train_data);
+    load_JSON(file, prepare_conditional_train_data);
 
   for (file of test_files_conditional)
-  load_JSON(file, prepare_conditional_test_data);
+    load_JSON(file, prepare_conditional_test_data);
 
   //EMPHASIS
   for (file of train_files_emphasis)
-  load_JSON(file, prepare_emphasis_train_data);
+    load_JSON(file, prepare_emphasis_train_data);
 
   for (file of test_files_emphasis)
-  load_JSON(file, prepare_emphasis_test_data);
+    load_JSON(file, prepare_emphasis_test_data);
 
   //YN
   for (file of train_files_yn)
-  load_JSON(file, prepare_yn_train_data);
+    load_JSON(file, prepare_yn_train_data);
 
   for (file of test_files_yn)
-  load_JSON(file, prepare_yn_test_data);
+    load_JSON(file, prepare_yn_test_data);
 
   //DOUBT
   for (file of train_files_doubt)
-  load_JSON(file, prepare_doubt_train_data);
+    load_JSON(file, prepare_doubt_train_data);
 
   for (file of test_files_doubt)
-  load_JSON(file, prepare_doubt_test_data);
+    load_JSON(file, prepare_doubt_test_data);
 
   //AFFIRMATIVE
   for (file of train_files_aff)
-  load_JSON(file, prepare_aff_train_data);
+    load_JSON(file, prepare_aff_train_data);
 
   for (file of test_files_aff)
-  load_JSON(file, prepare_aff_test_data);
+    load_JSON(file, prepare_aff_test_data);
 
   //WH
   for (file of train_files_wh)
-  load_JSON(file, prepare_wh_train_data);
+    load_JSON(file, prepare_wh_train_data);
 
   for (file of train_files_wh)
-  load_JSON(file, prepare_wh_test_data);
-
+    load_JSON(file, prepare_wh_test_data);
 
   //RELATIVE
   for (file of train_files_relative)
-  load_JSON(file, prepare_relative_train_data);
+    load_JSON(file, prepare_relative_train_data);
 
   for (file of test_files_relative)
-  load_JSON(file, prepare_relative_test_data);
+    load_JSON(file, prepare_relative_test_data);
 
   //TOPICS
   for (file of train_files_topics)
-  load_JSON(file, prepare_topics_train_data);
+    load_JSON(file, prepare_topics_train_data);
 
   for (file of test_files_topics)
-  load_JSON(file, prepare_topics_test_data);
-
+    load_JSON(file, prepare_topics_test_data);
 
   setTimeout(function () {
     console.log("Loaded data");
     $('#buttons').append('<strong id="data-loaded">Data Loaded</strong>');
   }, 5000);
+
 }
 
 function load_JSON(file, callback) {
@@ -770,11 +758,6 @@ function load_and_step() {
 
   if (topics_trainIteraction >= topics_train_data.length)
   topics_trainIteraction = 0;
-
-
-//var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
-
-
 
   networkTrainingAndTesting( negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_testIteraction, 1);
   networkTrainingAndTesting( conditional_train_data, conditional_train_labels, conditional_trainIteraction, conditional_test_data, conditional_test_labels, conditional_testIteraction,2);
