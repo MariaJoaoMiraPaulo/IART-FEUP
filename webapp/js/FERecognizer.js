@@ -1,16 +1,84 @@
 var N;
 /* 3/4 of data in order to train network*/
-var train_data = [];
+var negative_train_data = [];
+var conditional_train_data = [];
+var emphasis_train_data = [];
+var yn_train_data = [];
+var doubt_train_data = [];
+var aff_train_data = [];
+var wh_train_data = [];
+var relative_train_data = [];
+
 /* 1/4 of data in order to test network*/
-var test_data = [];
+var negative_test_data = [];
+var conditional_test_data = [];
+var emphasis_test_data = [];
+var yn_test_data = [];
+var doubt_test_data = [];
+var aff_test_data = [];
+var wh_test_data = [];
+var relative_test_data = [];
+
 /* 1/4 of data results in order to train network*/
-var train_labels = [];
+var negative_train_labels = [];
+var conditional_train_labels = [];
+var emphasis_train_labels = [];
+var yn_train_labels = [];
+var doubt_train_labels = [];
+var aff_train_labels = [];
+var wh_train_labels = [];
+var relative_train_labels = [];
+
 /* 3/4 of data results in order to test network*/
-var test_labels = [];
+
+var negative_test_labels = [];
+var conditional_test_labels = [];
+var emphasis_test_labels = [];
+var yn_test_labels = [];
+var doubt_test_labels = [];
+var aff_test_labels = [];
+var wh_test_labels = [];
+var relative_test_labels = [];
+
+
+var negative_testIteraction = 1;
+var negative_trainIteraction = 1;
+
+var conditional_testIteraction = 1;
+var conditional_trainIteraction = 1;
+
+var emphasis_testIteraction = 1;
+var emphasis_trainIteraction = 1;
+
+var yn_testIteraction = 1;
+var yn_trainIteraction = 1;
+
+var doubt_testIteraction = 1;
+var doubt_trainIteraction = 1;
+
+var aff_testIteraction = 1;
+var aff_trainIteraction = 1;
+
+var wh_testIteraction = 1;
+var wh_trainIteraction = 1;
+
+var relative_testIteraction = 1;
+var relative_trainIteraction = 1;
+
 var step_num = 0;
-var testIteraction = 1;
-var trainIteraction = 1;
-var trainer;
+//var trainer;
+
+//TRAINERS
+var negative_trainer;
+var conditional_trainer;
+var emphasis_trainer;
+var yn_question_trainer;
+var doubt_question_trainer;
+var aff_trainer;
+var wh_question_trainer;
+var relative_trainer;
+
+
 var intervalId;
 var learning_rate;
 var l1_decay;
@@ -28,10 +96,21 @@ var activation_function;
 var number_of_neurons;
 var netx;
 var avloss = 0;
-var legend = ['neutra','affirmative'];
+
+var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
 // paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
 var stats;
-var net = new convnetjs.Net(); // declared outside -> global variable in window scope
+
+
+//NETWORKS
+var negative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var conditional_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var emphasis_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var yn_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var doubt_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var aff_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var wh_question_net = new convnetjs.Net(); // declared outside -> global variable in window scope
+var relative_net = new convnetjs.Net(); // declared outside -> global variable in window scope
 
 $(document).ready(function () {
   original_data();
@@ -39,7 +118,7 @@ $(document).ready(function () {
 
 function initNetwork() {
   //Shuffles the data while keeping targets synced
-  shuffleData();
+  //shuffleData();
   var layer_defs = [];
   setPreferences();
   initGraphs();
@@ -67,11 +146,19 @@ function initNetwork() {
     num_classes: 10
   });
 
-  net.makeLayers(layer_defs);
+  //net.makeLayers(layer_defs);
+  negative_net.makeLayers(layer_defs);
+  conditional_net.makeLayers(layer_defs);
+  emphasis_net.makeLayers(layer_defs);
+  yn_question_net.makeLayers(layer_defs);
+  doubt_question_net.makeLayers(layer_defs);
+  aff_net.makeLayers(layer_defs);
+  wh_question_net.makeLayers(layer_defs);
+  relative_net.makeLayers(layer_defs);
+
   initTrainer();
   intervalId = setInterval(load_and_step, 0);
 }
-
 
 function setPreferences() {
 
@@ -103,7 +190,70 @@ function initGraphs() {
 
 function initTrainer() {
   if (training_method == 'sgd') {
-    trainer = new convnetjs.Trainer(net, {
+    negative_trainer = new convnetjs.Trainer(negative_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    conditional_trainer = new convnetjs.Trainer(conditional_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    emphasis_trainer = new convnetjs.Trainer(emphasis_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    yn_question_trainer = new convnetjs.Trainer(yn_question_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    doubt_question_trainer = new convnetjs.Trainer(doubt_question_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    aff_trainer = new convnetjs.Trainer(aff_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    wh_question_trainer = new convnetjs.Trainer(wh_question_net, {
+      method: 'sgd',
+      learning_rate: learning_rate,
+      l2_decay: l2_decay,
+      momentum: momentum,
+      batch_size: batch_size,
+      l1_decay: l1_decay
+    });
+
+    relative_trainer = new convnetjs.Trainer(relative_net, {
       method: 'sgd',
       learning_rate: learning_rate,
       l2_decay: l2_decay,
@@ -112,7 +262,49 @@ function initTrainer() {
       l1_decay: l1_decay
     });
   } else {
-    trainer = new convnetjs.Trainer(net, {
+    negative_trainer = new convnetjs.Trainer(negative_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    conditional_trainer = new convnetjs.Trainer(conditional_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    emphasis_trainer = new convnetjs.Trainer(emphasis_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    yn_question_trainer = new convnetjs.Trainer(yn_question_trainer, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    doubt_question_trainer = new convnetjs.Trainer(doubt_question_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    aff_trainer = new convnetjs.Trainer(aff_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    wh_question_trainer = new convnetjs.Trainer(wh_question_net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+
+    relative_trainer = new convnetjs.Trainer(relative_net, {
       method: training_method,
       l2_decay: l2_decay,
       batch_size: batch_size
@@ -121,15 +313,89 @@ function initTrainer() {
 }
 
 function original_data() {
-  train_files = ['train/a_affirmative.json'];
-  test_files = ['test/a_affirmative.json'];
+
+  train_files_negative = ['train/a_negative.json'];
+  test_files_negative = ['test/a_negative.json'];
+
+  train_files_conditional = ['train/a_conditional.json'];
+  test_files_conditional = ['test/a_conditional.json'];
+
+  train_files_emphasis = ['train/a_emphasis.json'];
+  test_files_emphasis = ['test/a_emphasis.json'];
+
+  train_files_yn = ['train/a_yn_question.json'];
+  test_files_yn = ['test/a_yn_question.json'];
+
+  train_files_doubt = ['train/a_doubt_question.json'];
+  test_files_doubt = ['test/a_doubt_question.json'];
+
+  train_files_aff = ['train/a_affirmative.json'];
+  test_files_aff = ['test/a_affirmative.json'];
+
+  train_files_wh = ['train/a_wh_question.json'];
+  test_files_wh = ['test/a_wh_question.json'];
+
+  train_files_relative = ['train/a_relative.json'];
+  test_files_relative = ['test/a_relative.json'];
 
 
-  for (file of train_files)
-    load_JSON(file, prepare_train_data);
+//NEGATIVE
+  for (file of train_files_negative)
+      load_JSON(file, prepare_negative_train_data);
 
-  for (file of test_files)
-    load_JSON(file, prepare_test_data);
+  for (file of test_files_negative)
+      load_JSON(file, prepare_negative_test_data);
+
+//CONDITIONAL
+  for (file of train_files_conditional)
+      load_JSON(file, prepare_conditional_train_data);
+
+  for (file of test_files_conditional)
+      load_JSON(file, prepare_conditional_test_data);
+
+//EMPHASIS
+  for (file of train_files_emphasis)
+      load_JSON(file, prepare_emphasis_train_data);
+
+  for (file of test_files_emphasis)
+      load_JSON(file, prepare_emphasis_test_data);
+
+  //YN
+  for (file of train_files_yn)
+      load_JSON(file, prepare_yn_train_data);
+
+  for (file of train_files_yn)
+      load_JSON(file, prepare_yn_test_data);
+
+//DOUBT
+  for (file of train_files_doubt)
+      load_JSON(file, prepare_doubt_train_data);
+
+  for (file of test_files_doubt)
+      load_JSON(file, prepare_doubt_test_data);
+
+//AFFIRMATIVE
+  for (file of train_files_aff)
+    load_JSON(file, prepare_aff_train_data);
+
+  for (file of test_files_aff)
+    load_JSON(file, prepare_aff_test_data);
+
+  //WH
+  for (file of train_files_wh)
+    load_JSON(file, prepare_wh_train_data);
+
+  for (file of train_files_wh)
+    load_JSON(file, prepare_wh_test_data);
+
+
+//RELATIVE
+  for (file of train_files_relative)
+      load_JSON(file, prepare_relative_train_data);
+
+  for (file of test_files_relative)
+      load_JSON(file, prepare_relative_test_data);
+
 
   setTimeout(function () {
     console.log("Loaded data");
@@ -145,7 +411,6 @@ function load_JSON(file, callback) {
 
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
-
       // .open will NOT return a value but simply returns undefined in async mode so use a callback
       callback(xobj.responseText);
 
@@ -154,7 +419,7 @@ function load_JSON(file, callback) {
   xobj.send(null);
 }
 
-function prepare_train_data(response) {
+function prepare_negative_train_data(response) {
   jsonResponse = JSON.parse(response);
 
   var label;
@@ -169,13 +434,13 @@ function prepare_train_data(response) {
         lineData.push(line[element]);
       }
     }
-    train_data.push(lineData);
-    train_labels.push(label);
+    negative_train_data.push(lineData);
+    negative_train_labels.push(label);
   }
 }
 
 
-function prepare_test_data(response) {
+function prepare_negative_test_data(response) {
   jsonResponse = JSON.parse(response);
   var label;
 
@@ -189,46 +454,384 @@ function prepare_test_data(response) {
         lineData.push(line[element]);
       }
     }
-    test_data.push(lineData);
-    test_labels.push(label);
+    negative_test_data.push(lineData);
+    negative_test_labels.push(label);
+  }
+}
+
+function prepare_conditional_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    conditional_train_data.push(lineData);
+    conditional_train_labels.push(label);
+  }
+}
+
+
+function prepare_conditional_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    conditional_test_data.push(lineData);
+    conditional_test_labels.push(label);
+  }
+}
+
+function prepare_emphasis_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    emphasis_train_data.push(lineData);
+    emphasis_train_labels.push(label);
+  }
+}
+
+
+function prepare_emphasis_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    emphasis_test_data.push(lineData);
+    emphasis_test_labels.push(label);
+  }
+}
+
+function prepare_yn_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    yn_train_data.push(lineData);
+    yn_train_labels.push(label);
+  }
+}
+
+
+function prepare_yn_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    yn_test_data.push(lineData);
+    yn_test_labels.push(label);
+  }
+}
+
+
+function prepare_doubt_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    doubt_train_data.push(lineData);
+    doubt_train_labels.push(label);
+  }
+}
+
+
+function prepare_doubt_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    doubt_test_data.push(lineData);
+    doubt_test_labels.push(label);
+  }
+}
+
+function prepare_aff_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    aff_train_data.push(lineData);
+    aff_train_labels.push(label);
+  }
+}
+
+
+function prepare_aff_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    aff_test_data.push(lineData);
+    aff_test_labels.push(label);
+  }
+}
+
+
+function prepare_wh_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    wh_train_data.push(lineData);
+    wh_train_labels.push(label);
+  }
+}
+
+
+function prepare_wh_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    wh_test_data.push(lineData);
+    wh_test_labels.push(label);
+  }
+}
+
+function prepare_relative_train_data(response) {
+  jsonResponse = JSON.parse(response);
+
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    relative_train_data.push(lineData);
+    relative_train_labels.push(label);
+  }
+}
+
+
+function prepare_relative_test_data(response) {
+  jsonResponse = JSON.parse(response);
+  var label;
+
+  for (line of jsonResponse) {
+    var lineData = [];
+    for (element in line) {
+
+      if (element == 'target') {
+        label = line[element];
+      } else if (element != 'index') {
+        lineData.push(line[element]);
+      }
+    }
+    relative_test_data.push(lineData);
+    relative_test_labels.push(label);
   }
 }
 
 function load_and_step() {
+
+  negative_testIteraction ++;
+  negative_trainIteraction ++;
+
+  conditional_testIteraction ++;
+  conditional_trainIteraction ++;
+
+  emphasis_testIteraction ++;
+  emphasis_trainIteraction ++;
+
+  yn_testIteraction ++;
+  yn_trainIteraction ++;
+
+  doubt_testIteraction ++;
+  doubt_trainIteraction ++;
+
+  aff_testIteraction ++;
+  aff_trainIteraction ++;
+
+  wh_testIteraction ++;
+  wh_trainIteraction ++;
+
+  relative_testIteraction ++;
+  relative_trainIteraction ++;
+
   step_num++;
-  testIteraction++;
-  trainIteraction++;
 
-
-  test_length = test_data.length;
-  train_length = train_data.length;
   var losses = [];
   var trainacc = [];
   var testacc = [];
 
-  if (testIteraction >= test_length)
-    testIteraction = 0;
 
-  if (trainIteraction >= train_length)
-    trainIteraction = 0;
+  if (negative_testIteraction >= negative_test_data.length)
+    negative_testIteraction = 0;
+
+  if (negative_trainIteraction >=  negative_train_data.length)
+    negative_trainIteraction = 0;
+
+  if (conditional_testIteraction >= conditional_test_data.length)
+    conditional_testIteraction = 0;
+
+  if (conditional_trainIteraction >=  conditional_train_data.length)
+    conditional_trainIteraction = 0;
+
+  if (emphasis_testIteraction >= emphasis_test_data.length)
+        emphasis_testIteraction = 0;
+
+  if (emphasis_trainIteraction >= emphasis_train_data.length)
+        emphasis_trainIteraction = 0;
+
+  if (yn_testIteraction >= yn_test_data.length)
+       yn_testIteraction = 0;
+
+  if (yn_trainIteraction >= yn_train_data.length)
+      yn_trainIteraction = 0;
+
+  if ( doubt_testIteraction >= doubt_test_data.length)
+     doubt_testIteraction = 0;
+
+  if (doubt_trainIteraction >= doubt_train_data.length)
+      doubt_trainIteraction = 0;
+
+  if (aff_testIteraction >= aff_test_data.length)
+    aff_testIteraction = 0;
+
+  if (aff_trainIteraction >= aff_train_data.length)
+      aff_trainIteraction = 0;
+
+  if (wh_testIteraction >= wh_test_data.length)
+           wh_testIteraction = 0;
+
+  if (wh_trainIteraction >= wh_train_data.length)
+          wh_trainIteraction = 0;
 
 
-  netx = new convnetjs.Vol(1, 1, 38);
+  if (relative_testIteraction >= relative_test_data.length)
+                relative_testIteraction = 0;
 
-  netx.w = train_data[trainIteraction];
-  var stats = trainer.train(netx, train_labels[trainIteraction]);
-  avloss = stats.loss;
+  if (relative_trainIteraction >= relative_train_data.length)
+                relative_trainIteraction = 0;
 
-  var yhat = net.getPrediction();
-  trainAccWindows[train_labels[trainIteraction]].add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
 
-  lossWindows[train_labels[trainIteraction]].add(avloss);
-
-  var x = new convnetjs.Vol(1, 1, 38);
-  x.w = test_data[testIteraction];
-  var scores = net.forward(x); // pass forward through network
-  var yhat_test = net.getPrediction();
-  testAccWindows[test_labels[testIteraction]].add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
+  networkTrainingAndTesting(negative_trainer, negative_train_data, negative_train_labels, negative_trainIteraction, negative_test_data, negative_test_labels, negative_trainIteraction, negative_net);
+  networkTrainingAndTesting(conditional_trainer, conditional_train_data, conditional_train_labels, conditional_trainIteraction, conditional_test_data, conditional_test_labels, conditional_testIteraction, conditional_net);
+  networkTrainingAndTesting(emphasis_trainer, emphasis_train_data, emphasis_train_labels, emphasis_trainIteraction, emphasis_test_data, emphasis_train_data, emphasis_testIteraction, emphasis_net);
+  networkTrainingAndTesting(yn_question_trainer, n_train_data, yn_train_labels, yn_trainIteraction, yn_test_data, yn_test_labels, yn_testIteraction, yn_question_net);
+  networkTrainingAndTesting(doubt_question_trainer, oubt_train_data, doubt_test_data, doubt_trainIteraction, doubt_test_data, doubt_test_labels, doubt_testIteraction, doubt_question_net);
+  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
+  networkTrainingAndTesting(wh_question_trainer, wh_train_data, wh_train_labels, wh_trainIteraction, wh_test_data, wh_test_labels, wh_testIteraction, wh_question_net);
+  networkTrainingAndTesting(relative_trainer, elative_train_labels, relative_train_labels, relative_trainIteraction, relative_test_data, relative_test_labels, relative_testIteraction, relative_net);
 
   if (step_num % 1000 === 0) {
     for (var i = 0; i < legend.length; i++) {
@@ -244,13 +847,37 @@ function load_and_step() {
     }
 
     $('.lossgraph p#neutra').html(lossWindows[0].get_average());
-    $('.lossgraph p#affirmative').html(lossWindows[1].get_average());
+    $('.lossgraph p#affirmative').html(lossWindows[7].get_average());
+    $('.lossgraph p#conditional').html(lossWindows[2].get_average());
+    $('.lossgraph p#doubt_question').html(lossWindows[6].get_average());
+    $('.lossgraph p#emphasis').html(lossWindows[3].get_average());
+    $('.lossgraph p#negative').html(lossWindows[1].get_average());
+    $('.lossgraph p#relative').html(lossWindows[9].get_average());
+    $('.lossgraph p#topics').html(lossWindows[4].get_average());
+    $('.lossgraph p#wh_question').html(lossWindows[8].get_average());
+    $('.lossgraph p#yn_question').html(lossWindows[5].get_average());
 
     $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
-    $('.trainaccgraph p#affirmative').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#affirmative').html(trainAccWindows[7].get_average());
+    $('.trainaccgraph p#conditional').html(trainAccWindows[2].get_average());
+    $('.trainaccgraph p#doubt_question').html(trainAccWindows[6].get_average());
+    $('.trainaccgraph p#emphasis').html(trainAccWindows[3].get_average());
+    $('.trainaccgraph p#negative').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#relative').html(trainAccWindows[9].get_average());
+    $('.trainaccgraph p#topics').html(trainAccWindows[4].get_average());
+    $('.trainaccgraph p#wh_question').html(trainAccWindows[8].get_average());
+    $('.trainaccgraph p#yn_question').html(trainAccWindows[5].get_average());
 
     $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
-    $('.testaccgraph p#affirmative').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#affirmative').html(testAccWindows[7].get_average());
+    $('.testaccgraph p#conditional').html(testAccWindows[2].get_average());
+    $('.testaccgraph p#doubt_question').html(testAccWindows[6].get_average());
+    $('.testaccgraph p#emphasis').html(testAccWindows[3].get_average());
+    $('.testaccgraph p#negative').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#relative').html(testAccWindows[9].get_average());
+    $('.testaccgraph p#topics').html(testAccWindows[4].get_average());
+    $('.testaccgraph p#wh_question').html(testAccWindows[8].get_average());
+    $('.testaccgraph p#yn_question').html(testAccWindows[5].get_average());
 
     lossGraph.add(step_num, losses);
     lossGraph.drawSelf(document.getElementById("lossgraph"));
@@ -261,6 +888,29 @@ function load_and_step() {
     testGraph.add(step_num, testacc);
     testGraph.drawSelf(document.getElementById("testaccgraph"));
   }
+}
+
+function networkTrainingAndTesting(trainer,trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, net){
+//  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
+
+  netx = new convnetjs.Vol(1, 1, 38);
+
+  netx.w = trainData[trainIteraction];
+
+  var stats = trainer.train(netx, trainLabels[trainIteraction]);
+  avloss = stats.loss;
+
+  var yhat = net.getPrediction();
+  trainAccWindows[trainLabels[trainIteraction]].add(yhat === trainLabels[trainIteraction] ? 1.0 : 0.0);
+
+  lossWindows[trainLabels[trainIteraction]].add(avloss);
+
+  var x = new convnetjs.Vol(1, 1, 38);
+  x.w = testData[testIteraction];
+  console.log(testIteraction);
+  var scores = net.forward(x); // pass forward through network
+  var yhat_test = net.getPrediction();
+  testAccWindows[testLabels[testIteraction]].add(yhat_test === testLabels[testIteraction] ? 1.0 : 0.0);
 }
 
 function saveNetwork() {
@@ -288,8 +938,8 @@ function resumeNetwork(){
 }
 
 function shuffleData() {
-  let trainCounter = train_data.length;
-  let testCounter = test_data.length
+  let trainCounter = aff_train_data.length;
+  let testCounter = aff_test_data.length
   // While there are elements in the array
   while (trainCounter > 0) {
     // Pick a random index
@@ -299,12 +949,12 @@ function shuffleData() {
     trainCounter--;
 
     // And swap the last element with it
-    let temp1 = train_data[trainCounter];
-    let temp2 = train_labels[trainCounter];
-    train_data[trainCounter] = train_data[index];
-    train_data[index] = temp1;
-    train_labels[trainCounter] = train_labels[index];
-    train_labels[index] = temp2;
+    let temp1 = aff_train_data[trainCounter];
+    let temp2 = aff_train_labels[trainCounter];
+    aff_train_data[trainCounter] = aff_train_data[index];
+    aff_train_data[index] = temp1;
+    aff_train_labels[trainCounter] = aff_train_labels[index];
+    aff_train_labels[index] = temp2;
   }
   while (testCounter > 0) {
     // Pick a random index
@@ -314,11 +964,11 @@ function shuffleData() {
     testCounter--;
 
     // And swap the last element with it
-    let temp1 = test_data[testCounter];
-    let temp2 = test_labels[testCounter];
-    test_data[testCounter] = test_data[index];
-    test_data[index] = temp1;
-    test_labels[testCounter] = test_labels[index];
-    test_labels[index] = temp2;
+    let temp1 = aff_test_data[testCounter];
+    let temp2 = aff_test_labels[testCounter];
+    aff_test_data[testCounter] = aff_test_data[index];
+    aff_test_data[index] = temp1;
+    aff_test_labels[testCounter] = aff_test_labels[index];
+    aff_test_labels[index] = temp2;
   }
 }
