@@ -1,5 +1,5 @@
 var N;
-/* 3/4 of data in order to train network*/
+
 var negative_train_data = [];
 var conditional_train_data = [];
 var emphasis_train_data = [];
@@ -10,7 +10,6 @@ var wh_train_data = [];
 var relative_train_data = [];
 var topics_train_data = [];
 
-/* 1/4 of data in order to test network*/
 var negative_test_data = [];
 var conditional_test_data = [];
 var emphasis_test_data = [];
@@ -21,7 +20,6 @@ var wh_test_data = [];
 var relative_test_data = [];
 var topics_test_data = [];
 
-/* 1/4 of data results in order to train network*/
 var negative_train_labels = [];
 var conditional_train_labels = [];
 var emphasis_train_labels = [];
@@ -32,8 +30,6 @@ var wh_train_labels = [];
 var relative_train_labels = [];
 var topics_train_labels = [];
 
-/* 3/4 of data results in order to test network*/
-
 var negative_test_labels = [];
 var conditional_test_labels = [];
 var emphasis_test_labels = [];
@@ -43,7 +39,6 @@ var aff_test_labels = [];
 var wh_test_labels = [];
 var relative_test_labels = [];
 var topics_test_labels = [];
-
 
 var negative_testIteraction = 1;
 var negative_trainIteraction = 1;
@@ -63,7 +58,6 @@ var relative_testIteraction = 1;
 var relative_trainIteraction = 1;
 var topics_testIteraction = 1;
 var topics_trainIteraction = 1;
-
 
 var step_num = 0;
 
@@ -221,64 +215,54 @@ function original_data() {
   train_files_topics = ['train/a_topics.json'];
   test_files_topics = ['test/a_topics.json'];
 
-
-  //NEGATIVE
   for (file of train_files_negative)
     load_JSON(file, prepare_negative_train_data);
 
   for (file of test_files_negative)
     load_JSON(file, prepare_negative_test_data);
 
-  //CONDITIONAL
   for (file of train_files_conditional)
     load_JSON(file, prepare_conditional_train_data);
 
   for (file of test_files_conditional)
     load_JSON(file, prepare_conditional_test_data);
 
-  //EMPHASIS
   for (file of train_files_emphasis)
     load_JSON(file, prepare_emphasis_train_data);
 
   for (file of test_files_emphasis)
     load_JSON(file, prepare_emphasis_test_data);
 
-  //YN
   for (file of train_files_yn)
     load_JSON(file, prepare_yn_train_data);
 
   for (file of test_files_yn)
     load_JSON(file, prepare_yn_test_data);
 
-  //DOUBT
   for (file of train_files_doubt)
     load_JSON(file, prepare_doubt_train_data);
 
   for (file of test_files_doubt)
     load_JSON(file, prepare_doubt_test_data);
 
-  //AFFIRMATIVE
   for (file of train_files_aff)
     load_JSON(file, prepare_aff_train_data);
 
   for (file of test_files_aff)
     load_JSON(file, prepare_aff_test_data);
 
-  //WH
   for (file of train_files_wh)
     load_JSON(file, prepare_wh_train_data);
 
   for (file of train_files_wh)
     load_JSON(file, prepare_wh_test_data);
 
-  //RELATIVE
   for (file of train_files_relative)
     load_JSON(file, prepare_relative_train_data);
 
   for (file of test_files_relative)
     load_JSON(file, prepare_relative_test_data);
 
-  //TOPICS
   for (file of train_files_topics)
     load_JSON(file, prepare_topics_train_data);
 
@@ -828,7 +812,6 @@ function load_and_step() {
 }
 
 function networkTrainingAndTesting(trainData, trainLabels, trainIteraction, testData, testLabels, testIteraction, expressionNumber){
-  //  networkTrainingAndTesting(aff_trainer, aff_train_data, aff_train_labels, aff_trainIteraction, aff_test_data, aff_test_labels, aff_testIteraction, aff_net);
 
   var netx = new convnetjs.Vol(1, 1, 38);
   netx.w = trainData[trainIteraction];
