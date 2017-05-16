@@ -28,10 +28,11 @@ var activation_function;
 var number_of_neurons;
 var netx;
 var avloss = 0;
-var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
-// paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
+var legend = ['negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
+// p            .44          .65           .88        .80         .73             .84              .76            .77           .59
 var stats;
-var net = new convnetjs.Net(); // declared outside -> global variable in window scope 
+var nets = [];
+var trainers = [];
 
 $(document).ready(function () {
   original_data();
@@ -64,12 +65,22 @@ function initNetwork() {
   /* Output layer */
   layer_defs.push({
     type: activation_function_output,
-    num_classes: 10
+    num_classes: 2
   });
 
-  net.makeLayers(layer_defs);
+  for(var i=0;i<legend.length;i++) {
+    var net = new convnetjs.Net();
+    net.makeLayers(layer_defs);
+    var trainer = new convnetjs.Trainer(net, {
+      method: training_method,
+      l2_decay: l2_decay,
+      batch_size: batch_size
+    });
+    nets.push(net); 
+    trainers.push(trainer);
+  }
   //setPreferences();
-  initTrainer();
+  //initTrainer();
   //Start with a trained network
   //trainNetwork();
   intervalId = setInterval(load_and_step, 0);
@@ -216,46 +227,56 @@ function load_and_step() {
   step_num++;
   testIteraction++;
   trainIteraction++;
-
-
   test_length = test_data.length;
   train_length = train_data.length;
   var losses = [];
   var trainacc = [];
   var testacc = [];
 
+ 
   if (testIteraction >= test_length)
     testIteraction = 0;
 
   if (trainIteraction >= train_length)
     trainIteraction = 0;
 
+  var trainData = train_data[trainIteraction];
+  var trainLabel = train_labels[trainIteraction];
+  var testData = test_data[testIteraction];
+  var testLabel = test_labels[testIteraction];
+  var trainExpression = trainData.slice(-1)[0] -1;
+  var testExpression = testData.slice(-1)[0] -1;
+
+  if(trainLabel != 0)
+    trainLabel = 1;
+
+  if(testLabel != 0)
+    testLabel = 1;
+
 
   netx = new convnetjs.Vol(1, 1, 38);
 
-  netx.w = train_data[trainIteraction];
-  var stats = trainer.train(netx, train_labels[trainIteraction]);
+  netx.w = trainData;
+  var stats = trainers[trainExpression].train(netx, trainLabel);
   avloss = stats.loss;
 
-  var yhat = net.getPrediction();
-  trainAccWindows[train_labels[trainIteraction]].add(yhat === train_labels[trainIteraction] ? 1.0 : 0.0);
+  lossWindows[trainExpression].add(avloss);
 
-  lossWindows[train_labels[trainIteraction]].add(avloss);
+  var yhat = nets[trainExpression].getPrediction();
+  trainAccWindows[trainExpression].add(yhat);
 
   var x = new convnetjs.Vol(1, 1, 38);
-  x.w = test_data[testIteraction];
-  var scores = net.forward(x); // pass forward through network
-  var yhat_test = net.getPrediction();
-  testAccWindows[test_labels[testIteraction]].add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
-  /*if (yhat_test === test_labels[testIteraction]) {
-    console.log("Correct: Result  " + yhat_test + " Expected " + test_labels[testIteraction]);
-    console.log(scores.w);
-  } else {
-    console.log("False: Result " + yhat_test + " Expected " + test_labels[testIteraction]);
-    console.log(scores.w);
-  }*/
+  x.w = testData;
+  var scores = nets[testExpression].forward(x); // pass forward through network
+  var yhat_test = nets[testExpression].getPrediction();
+  
+  var result = 0;
+  if(yhat_test === testLabel)
+    result=1;
 
-  if (step_num % 1000 === 0) {
+  testAccWindows[testExpression].add(result);
+
+  if (step_num % 300 === 0) {
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
@@ -269,38 +290,37 @@ function load_and_step() {
 
     }
 
-    $('.lossgraph p#neutra').html(lossWindows[0].get_average());
-    $('.lossgraph p#affirmative').html(lossWindows[7].get_average());
-    $('.lossgraph p#conditional').html(lossWindows[2].get_average());
-    $('.lossgraph p#doubt_question').html(lossWindows[6].get_average());
-    $('.lossgraph p#emphasis').html(lossWindows[3].get_average());
-    $('.lossgraph p#negative').html(lossWindows[1].get_average());
-    $('.lossgraph p#relative').html(lossWindows[9].get_average());
-    $('.lossgraph p#topics').html(lossWindows[4].get_average());
-    $('.lossgraph p#wh_question').html(lossWindows[8].get_average());
-    $('.lossgraph p#yn_question').html(lossWindows[5].get_average());
+    //$('.lossgraph p#neutra').html(lossWindows[0].get_average());
+    $('.lossgraph p#affirmative').html(lossWindows[6].get_average());
+    $('.lossgraph p#conditional').html(lossWindows[1].get_average());
+    $('.lossgraph p#doubt_question').html(lossWindows[5].get_average());
+    $('.lossgraph p#emphasis').html(lossWindows[2].get_average());
+    $('.lossgraph p#negative').html(lossWindows[0].get_average());
+    $('.lossgraph p#relative').html(lossWindows[8].get_average());
+    $('.lossgraph p#topics').html(lossWindows[3].get_average());
+    $('.lossgraph p#wh_question').html(lossWindows[7].get_average());
+    $('.lossgraph p#yn_question').html(lossWindows[4].get_average());
 
-    $('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
-    $('.trainaccgraph p#affirmative').html(trainAccWindows[7].get_average());
-    $('.trainaccgraph p#conditional').html(trainAccWindows[2].get_average());
-    $('.trainaccgraph p#doubt_question').html(trainAccWindows[6].get_average());
-    $('.trainaccgraph p#emphasis').html(trainAccWindows[3].get_average());
-    $('.trainaccgraph p#negative').html(trainAccWindows[1].get_average());
-    $('.trainaccgraph p#relative').html(trainAccWindows[9].get_average());
-    $('.trainaccgraph p#topics').html(trainAccWindows[4].get_average());
-    $('.trainaccgraph p#wh_question').html(trainAccWindows[8].get_average());
-    $('.trainaccgraph p#yn_question').html(trainAccWindows[5].get_average());
+    //$('.trainaccgraph p#neutra').html(trainAccWindows[0].get_average());
+    $('.trainaccgraph p#affirmative').html(trainAccWindows[6].get_average());
+    $('.trainaccgraph p#conditional').html(trainAccWindows[1].get_average());
+    $('.trainaccgraph p#doubt_question').html(trainAccWindows[5].get_average());
+    $('.trainaccgraph p#emphasis').html(trainAccWindows[2].get_average());
+    $('.trainaccgraph p#negative').html(trainAccWindows[0].get_average());
+    $('.trainaccgraph p#relative').html(trainAccWindows[8].get_average());
+    $('.trainaccgraph p#wh_question').html(trainAccWindows[7].get_average());
+    $('.trainaccgraph p#yn_question').html(trainAccWindows[4].get_average());
 
-    $('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
-    $('.testaccgraph p#affirmative').html(testAccWindows[7].get_average());
-    $('.testaccgraph p#conditional').html(testAccWindows[2].get_average());
-    $('.testaccgraph p#doubt_question').html(testAccWindows[6].get_average());
-    $('.testaccgraph p#emphasis').html(testAccWindows[3].get_average());
-    $('.testaccgraph p#negative').html(testAccWindows[1].get_average());
-    $('.testaccgraph p#relative').html(testAccWindows[9].get_average());
-    $('.testaccgraph p#topics').html(testAccWindows[4].get_average());
-    $('.testaccgraph p#wh_question').html(testAccWindows[8].get_average());
-    $('.testaccgraph p#yn_question').html(testAccWindows[5].get_average());
+    //$('.testaccgraph p#neutra').html(testAccWindows[0].get_average());
+    $('.testaccgraph p#affirmative').html(testAccWindows[6].get_average());
+    $('.testaccgraph p#conditional').html(testAccWindows[1].get_average());
+    $('.testaccgraph p#doubt_question').html(testAccWindows[5].get_average());
+    $('.testaccgraph p#emphasis').html(testAccWindows[2].get_average());
+    $('.testaccgraph p#negative').html(testAccWindows[0].get_average());
+    $('.testaccgraph p#relative').html(testAccWindows[8].get_average());
+    $('.testaccgraph p#topics').html(testAccWindows[3].get_average());
+    $('.testaccgraph p#wh_question').html(testAccWindows[7].get_average());
+    $('.testaccgraph p#yn_question').html(testAccWindows[4].get_average());
 
     lossGraph.add(step_num, losses);
     lossGraph.drawSelf(document.getElementById("lossgraph"));

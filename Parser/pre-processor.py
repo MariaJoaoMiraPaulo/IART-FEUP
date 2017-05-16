@@ -94,6 +94,7 @@ def process_expression(fexpression):
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
             expression_output.target = expression.target
+            expression_output.expression = expression.expression
             expressions.append(expression_output.__dict__)
         json.dump(expressions, outfile, sort_keys=True)
 
@@ -141,6 +142,7 @@ def process_expression(fexpression):
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
             expression_output.target = expression.target
+            expression_output.expression = expression.expression
             expressions.append(expression_output.__dict__)
         json.dump(expressions, outfile, sort_keys=True)
 
@@ -158,6 +160,7 @@ class Datapoints:
         self.frameID = 0
         self.points = []
         self.target = 0
+        self.distance = 0
         self.index = 0
 
 
@@ -189,6 +192,7 @@ class FEoutput:
         self.a7 = 0
         self.a8 = 0
         self.target = 0
+        self.expression = 0
         self.index = 0
 
 
@@ -252,6 +256,7 @@ for fileName in files:
                         j = 0
                     j = j + 1
                 d.target = targets[f][i-1]
+                d.expression = f+1
                 d.index = i
                 facial_expression.datapoints.append(d)
             i = i + 1
