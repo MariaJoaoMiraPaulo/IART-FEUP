@@ -260,10 +260,14 @@ function load_and_step() {
   var stats = trainers[trainExpression].train(netx, trainLabel);
   avloss = stats.loss;
 
-  lossWindows[trainExpression].add(avloss);
-
   var yhat = nets[trainExpression].getPrediction();
-  trainAccWindows[trainExpression].add(yhat);
+
+  console.log(trainLabel);
+
+  var result1 = 0;
+  if(yhat === trainLabel){
+    result1 = 1;
+  }
 
   var x = new convnetjs.Vol(1, 1, 38);
   x.w = testData;
@@ -271,10 +275,18 @@ function load_and_step() {
   var yhat_test = nets[testExpression].getPrediction();
   
   var result = 0;
-  if(yhat_test === testLabel)
+  if(yhat_test === testLabel){
     result=1;
-
-  testAccWindows[testExpression].add(result);
+  }
+   
+  if(trainLabel != 0){
+    trainAccWindows[trainExpression].add(result1);
+    lossWindows[trainExpression].add(avloss);
+  }
+  if(testLabel != 0){
+    testAccWindows[testExpression].add(result);
+  }
+  
 
   if (step_num % 300 === 0) {
     for (var i = 0; i < legend.length; i++) {
