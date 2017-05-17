@@ -261,9 +261,7 @@ function load_and_step() {
   avloss = stats.loss;
 
   var yhat = nets[trainExpression].getPrediction();
-
-  console.log(trainLabel);
-
+  
   var result1 = 0;
   if(yhat === trainLabel){
     result1 = 1;
@@ -288,7 +286,7 @@ function load_and_step() {
   }
   
 
-  if (step_num % 300 === 0) {
+  if (step_num % 1500 === 0) {
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
