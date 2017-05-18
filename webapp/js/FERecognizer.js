@@ -286,7 +286,7 @@ function load_and_step() {
   }
   
 
-  if (step_num % 1500 === 0) {
+  if (step_num % 3000 === 0) {
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
