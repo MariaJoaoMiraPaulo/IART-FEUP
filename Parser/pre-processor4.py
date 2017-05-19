@@ -52,53 +52,50 @@ def process_expression(fexpression):
 
     with open("train/"+fexpression.name.replace(".txt", ".json"), "w+") as outfile:
         expressions = []
-        neutra = 100
         for expression in train:
-            if expression.target == 0:
-                neutra = neutra - 1
-            if (expression.target == 0 and neutra > 0) or (expression.target != 0):
-                expression_output = FEoutput()
-                expression_output.index = expression.index
-                expression_output.d1 = distance(expression.points[48], expression.points[54])
-                expression_output.d2 = distance(expression.points[51], expression.points[57])
-                expression_output.d3 = distance(expression.points[62], expression.points[66])
-                expression_output.d4 = distance(expression.points[25], expression.points[31])
-                expression_output.d5 = distance(expression.points[31], expression.points[47])
-                expression_output.d6 = distance(expression.points[25], expression.points[36])
-                expression_output.d7 = distance(expression.points[4], expression.points[0])
-                expression_output.d8 = distance(expression.points[2], expression.points[6])
-                expression_output.d9 = distance(expression.points[23], expression.points[3])
-                expression_output.d10 = distance(expression.points[33], expression.points[11])
-                expression_output.d11 = distance(expression.points[10], expression.points[14])
-                expression_output.d12 = distance(expression.points[8], expression.points[12])
-                expression_output.d13 = distance(expression.points[90], expression.points[95])
-                expression_output.d14 = distance(expression.points[16], expression.points[26])
-                expression_output.d15 = distance(expression.points[30], expression.points[95])
-                expression_output.d16 = distance(expression.points[20], expression.points[90])
-                expression_output.d17 = distance(expression.points[21], expression.points[4])
-                expression_output.d18 = distance(expression.points[24], expression.points[1])
-                expression_output.d19 = distance(expression.points[38], expression.points[6])
-                expression_output.d20 = distance(expression.points[37], expression.points[46])
-                expression_output.d21 = distance(expression.points[32], expression.points[9])
-                expression_output.d22 = distance(expression.points[47], expression.points[36])
-                expression_output.d23 = distance(expression.points[35], expression.points[12])
-                expression_output.d24 = distance(expression.points[45], expression.points[14])
-                expression_output.d25 = distance(expression.points[39], expression.points[69])
-                expression_output.d26 = distance(expression.points[44], expression.points[85])
-                expression_output.d27 = distance(expression.points[53], expression.points[43])
-                expression_output.d28 = distance(expression.points[51], expression.points[89])
-                expression_output.d29 = distance(expression.points[40], expression.points[49])
-                expression_output.d30 = distance(expression.points[77], expression.points[57])
-                expression_output.a1 = angle(expression.points[37], expression.points[40], expression.points[89])
-                expression_output.a2 = angle(expression.points[89], expression.points[43], expression.points[46])
-                expression_output.a3 = angle(expression.points[90], expression.points[20], expression.points[30])
-                expression_output.a4 = angle(expression.points[20], expression.points[30], expression.points[95])
-                expression_output.a5 = angle(expression.points[51], expression.points[48], expression.points[57])
-                expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
-                expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
-                expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
-                expression_output.target = expression.target
-                expressions.append(expression_output.__dict__)
+            expression_output = FEoutput()
+            expression_output.index = expression.index
+            expression_output.d1 = distance(expression.points[48], expression.points[54])
+            expression_output.d2 = distance(expression.points[51], expression.points[57])
+            expression_output.d3 = distance(expression.points[62], expression.points[66])
+            expression_output.d4 = distance(expression.points[25], expression.points[31])
+            expression_output.d5 = distance(expression.points[31], expression.points[47])
+            expression_output.d6 = distance(expression.points[25], expression.points[36])
+            expression_output.d7 = distance(expression.points[4], expression.points[0])
+            expression_output.d8 = distance(expression.points[2], expression.points[6])
+            expression_output.d9 = distance(expression.points[23], expression.points[3])
+            expression_output.d10 = distance(expression.points[33], expression.points[11])
+            expression_output.d11 = distance(expression.points[10], expression.points[14])
+            expression_output.d12 = distance(expression.points[8], expression.points[12])
+            expression_output.d13 = distance(expression.points[90], expression.points[95])
+            expression_output.d14 = distance(expression.points[16], expression.points[26])
+            expression_output.d15 = distance(expression.points[30], expression.points[95])
+            expression_output.d16 = distance(expression.points[20], expression.points[90])
+            expression_output.d17 = distance(expression.points[21], expression.points[4])
+            expression_output.d18 = distance(expression.points[24], expression.points[1])
+            expression_output.d19 = distance(expression.points[38], expression.points[6])
+            expression_output.d20 = distance(expression.points[37], expression.points[46])
+            expression_output.d21 = distance(expression.points[32], expression.points[9])
+            expression_output.d22 = distance(expression.points[47], expression.points[36])
+            expression_output.d23 = distance(expression.points[35], expression.points[12])
+            expression_output.d24 = distance(expression.points[45], expression.points[14])
+            expression_output.d25 = distance(expression.points[39], expression.points[69])
+            expression_output.d26 = distance(expression.points[44], expression.points[85])
+            expression_output.d27 = distance(expression.points[53], expression.points[43])
+            expression_output.d28 = distance(expression.points[51], expression.points[89])
+            expression_output.d29 = distance(expression.points[40], expression.points[49])
+            expression_output.d30 = distance(expression.points[77], expression.points[57])
+            expression_output.a1 = angle(expression.points[37], expression.points[40], expression.points[89])
+            expression_output.a2 = angle(expression.points[89], expression.points[43], expression.points[46])
+            expression_output.a3 = angle(expression.points[90], expression.points[20], expression.points[30])
+            expression_output.a4 = angle(expression.points[20], expression.points[30], expression.points[95])
+            expression_output.a5 = angle(expression.points[51], expression.points[48], expression.points[57])
+            expression_output.a6 = angle(expression.points[51], expression.points[54], expression.points[57])
+            expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
+            expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
+            expression_output.target = expression.target
+            expression_output.expression = expression.expression
+            expressions.append(expression_output.__dict__)
         json.dump(expressions, outfile, sort_keys=True)
 
     with open("test/"+fexpression.name.replace(".txt", ".json"), "w+") as outfile:
@@ -145,6 +142,7 @@ def process_expression(fexpression):
             expression_output.a7 = angle(expression.points[51], expression.points[48], expression.points[54])
             expression_output.a8 = angle(expression.points[51], expression.points[54], expression.points[48])
             expression_output.target = expression.target
+            expression_output.expression = expression.expression
             expressions.append(expression_output.__dict__)
         json.dump(expressions, outfile, sort_keys=True)
 
@@ -162,6 +160,7 @@ class Datapoints:
         self.frameID = 0
         self.points = []
         self.target = 0
+        self.distance = 0
         self.index = 0
 
 
@@ -193,6 +192,7 @@ class FEoutput:
         self.a7 = 0
         self.a8 = 0
         self.target = 0
+        self.expression = 0
         self.index = 0
 
 
@@ -256,6 +256,7 @@ for fileName in files:
                         j = 0
                     j = j + 1
                 d.target = targets[f][i-1]
+                d.expression = f+1
                 d.index = i
                 facial_expression.datapoints.append(d)
             i = i + 1
