@@ -286,7 +286,13 @@ function load_and_step() {
   }
   
 
-  if (step_num % 3000 === 0) {
+  if (step_num % 5000 === 0) {
+
+    if(step_num > 3400000){
+        stopNetwork();
+    }
+      
+
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
@@ -347,14 +353,19 @@ function saveNetwork() {
 
   document.getElementById("network_data").innerHTML = "";
 
-  /* network outputs all of its parameters into json object*/
-  var json = net.toJSON();
+  for(var i = 0; i < nets.length; i++){
 
-  /* the entire object is now simply string. You can save this somewhere */
-  var netwok_data = JSON.stringify(json);
+    /* network outputs all of its parameters into json object*/
+    var json = nets[i].toJSON();
+
+    /* the entire object is now simply string. You can save this somewhere */
+    var netwok_data = JSON.stringify(json);
+
+    document.getElementById("network_data").append = netwok_data;
+  }
+  
 
   console.log("Saving network ... ");
-  document.getElementById("network_data").innerHTML = netwok_data;
 }
 
 function stopNetwork() {

@@ -297,7 +297,11 @@ function load_and_step() {
   var yhat_test = net.getPrediction();
   testAccWindows[test_labels[testIteraction]].add(yhat_test === test_labels[testIteraction] ? 1.0 : 0.0);
 
-  if (step_num % 1000 === 0) {
+  if (step_num % 5000 === 0) {
+
+    if(step_num > 3400000){
+        stopNetwork();
+    }
     for (var i = 0; i < legend.length; i++) {
       if (lossWindows[i].get_average() != -1) {
         losses.push(lossWindows[i].get_average());
