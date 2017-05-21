@@ -27,7 +27,8 @@ var number_of_hidden_layers;
 var activation_function;
 var netx;
 var avloss = 0;
-var legend = ['neutra', 'affirmative', 'conditional', 'doubt_question', 'emphasis', 'negative', 'relative', 'topics', 'wh_question', 'yn_question'];
+var legend = ['neutra', 'negative', 'conditional', 'emphasis', 'topics', 'yn_question', 'doubt_question', 'affirmative', 'wh_question', 'relative'];
+// paper values            .44          .65           .88        .80         .73             .84              .76            .77           .59
 var stats;
 var net = new convnetjs.Net(); // declared outside -> global variable in window scope 
 
