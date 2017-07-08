@@ -26,7 +26,6 @@ To do so we'll use ConvNetJS, a Javascript library, to train a neural network us
   - [ConvNetJS - Javascript library for training Neural Networks](http://cs.stanford.edu/people/karpathy/convnetjs/index.html)
   - [Notes of the Stanford CS class CS231n: Convolutional Neural Networks for Visual Recognition](http://cs231n.github.io/)
 
-
 ## Project Structure
 
 ### [GFE Data](https://github.com/pedro-c/IART-FEUP/tree/master/GFE%20Data)
@@ -60,3 +59,6 @@ Contains:
 ### [Experiment3: Reducted number of given neutral expressions](https://github.com/pedro-c/IART-FEUP/tree/master/experiment2)
 
 ### [Experiment4: Tested a neural expression for each expression](https://github.com/pedro-c/IART-FEUP/tree/master/experiment3)
+
+![App Screenshot](https://github.com/pedro-c/IART-FEUP/blob/master/app-screenshot.png)
+
