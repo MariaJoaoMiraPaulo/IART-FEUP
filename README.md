@@ -18,6 +18,8 @@
 In this project, we are going to implement a neural network for recognizing Grammatical Facial Expressions (GFEs) used in the Brazilian Sign Language.
 To do so we'll use ConvNetJS, a Javascript library, to train a neural network using backpropagation algorithms. 
 
+#### [Live App](https://iart.herokuapp.com/)
+
 #### [Final Report](https://github.com/pedro-c/IART-FEUP/blob/master/Reports/IART1617_FINAL_GE5_4.pdf)
 
 ## Resources
