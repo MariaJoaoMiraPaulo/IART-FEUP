@@ -60,5 +60,7 @@ Contains:
 
 ### [Experiment4: Tested a neural expression for each expression](https://github.com/pedro-c/IART-FEUP/tree/master/experiment3)
 
+### WebApp Screenshot
+
 ![App Screenshot](https://github.com/pedro-c/IART-FEUP/blob/master/app-screenshot.png)
 
