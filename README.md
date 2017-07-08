@@ -3,8 +3,8 @@
 ## Contributors
 
 1. [Maria João Mira Paulo](https://github.com/MariaJoaoMiraPaulo)
-2. [Nuno Miguel Mendes Ramos](https://github.com/pedro-c)
-3. [Pedro Duarte da Costa](https://github.com/NunoRamos)
+2. [Nuno Miguel Mendes Ramos](https://github.com/NunoRamos)
+3. [Pedro Duarte da Costa](https://github.com/pedro-c)
 
 
 ## Index
@@ -27,10 +27,10 @@ To do so we'll use ConvNetJS, a Javascript library, to train a neural network us
 
 ## Project Structure
 
-### [Convnetjs Demos](https://github.com/NunoRamos/IART-FEUP/tree/master/Convnetjs%20Demos)
+### [Convnetjs Demos](https://github.com/pedro-c/IART-FEUP/tree/master/Convnetjs%20Demos)
 Contains a few examples of using Convuntional Neural Networks. ConvNetJS implements Deep Learning models and learning algorithms as well as nice browser-based demos, all in Javascript.
 
-### [GFE Data](https://github.com/NunoRamos/IART-FEUP/tree/master/GFE%20Data)
+### [GFE Data](https://github.com/pedro-c/IART-FEUP/tree/master/GFE%20Data)
 
 #### Pre-processed
 
@@ -46,11 +46,11 @@ Contains:
 
   - Targets files (* _ targets.txt): a class attribute (interger)
 
-### [Parser](https://github.com/NunoRamos/IART-FEUP/tree/master/Parser)
-  Small CLI style node app to convert delimited `.txt` files into `.json`
+### [Parser](https://github.com/pedro-c/IART-FEUP/tree/master/Parser)
+  Small CLI python program to parse datapoints in a `.txt` files to usefull data in `.json` format
 
-### [Reports](https://github.com/NunoRamos/IART-FEUP/tree/master/Repors)
+### [Reports](https://github.com/pedro-c/IART-FEUP/tree/master/Repors)
   Project reports.
 
-### [webapp](https://github.com/NunoRamos/IART-FEUP/tree/master/webapp)
+### [webapp](https://github.com/pedro-c/IART-FEUP/tree/master/webapp)
   Our implementation of a neural network using ConvNetJS to rate facial expressions.
