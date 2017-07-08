@@ -1,5 +1,7 @@
 # IART-FEUP - Neural network to rate facial expressions.
 
+#### [Live App](https://iart.herokuapp.com/)
+
 ## Contributors
 
 1. [Maria João Mira Paulo](https://github.com/MariaJoaoMiraPaulo)
@@ -9,11 +11,11 @@
 
 ## Index
 
-1. [Intruction](#intruction)
+1. [Introduction](#intruction)
 2. [Resources](#resources)
 3. [Project Structure](#project-structure)
 
-## Intruction
+## Introduction
 
 In this project, we are going to implement a neural network for recognizing Grammatical Facial Expressions (GFEs) used in the Brazilian Sign Language.
 To do so we'll use ConvNetJS, a Javascript library, to train a neural network using backpropagation algorithms. 
