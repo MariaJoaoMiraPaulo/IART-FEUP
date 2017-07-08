@@ -286,7 +286,7 @@ function load_and_step() {
   }
   
 
-  if (step_num % 5000 === 0) {
+  if (step_num % 300 === 0) {
 
     if(step_num > 3400000){
         stopNetwork();
