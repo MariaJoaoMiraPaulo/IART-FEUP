@@ -18,6 +18,8 @@
 In this project, we are going to implement a neural network for recognizing Grammatical Facial Expressions (GFEs) used in the Brazilian Sign Language.
 To do so we'll use ConvNetJS, a Javascript library, to train a neural network using backpropagation algorithms. 
 
+#### [Final Report](https://github.com/pedro-c/IART-FEUP/blob/master/Reports/IART1617_FINAL_GE5_4.pdf)
+
 ## Resources
   - [Grammatical Facial Expressions Data Set](http://archive.ics.uci.edu/ml/datasets/Grammatical+Facial+Expressions)
   - [Relevant Paper](http://www.aaai.org/ocs/index.php/FLAIRS/FLAIRS14/paper/viewFile/7788/7821)
@@ -27,14 +29,13 @@ To do so we'll use ConvNetJS, a Javascript library, to train a neural network us
 
 ## Project Structure
 
-### [Convnetjs Demos](https://github.com/pedro-c/IART-FEUP/tree/master/Convnetjs%20Demos)
-Contains a few examples of using Convuntional Neural Networks. ConvNetJS implements Deep Learning models and learning algorithms as well as nice browser-based demos, all in Javascript.
-
 ### [GFE Data](https://github.com/pedro-c/IART-FEUP/tree/master/GFE%20Data)
 
 #### Pre-processed
 
-Pre-processed data in json format.
+JSON formated pre-processed data can be found in the folder JSON inside each experiment.
+
+![Processed points](https://github.com/pedro-c/IART-FEUP/blob/master/GFEData/Pre-processed/v2.jpg)
 
 #### Raw
 Grammatical Facial Expressions for Brazilian Sign Language
@@ -52,5 +53,10 @@ Contains:
 ### [Reports](https://github.com/pedro-c/IART-FEUP/tree/master/Repors)
   Project reports.
 
-### [webapp](https://github.com/pedro-c/IART-FEUP/tree/master/webapp)
-  Our implementation of a neural network using ConvNetJS to rate facial expressions.
+### [Experiment1: Default experiment](https://github.com/pedro-c/IART-FEUP/tree/master/experiment1)
+
+### [Experiment2: Increased number of datapoints](https://github.com/pedro-c/IART-FEUP/tree/master/experiment1)
+
+### [Experiment3: Reducted number of given neutral expressions](https://github.com/pedro-c/IART-FEUP/tree/master/experiment2)
+
+### [Experiment4: Tested a neural expression for each expression](https://github.com/pedro-c/IART-FEUP/tree/master/experiment3)
